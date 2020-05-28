@@ -1,0 +1,17 @@
+
+{
+  "manifest_version": 2,
+  "name": "Locke-222",
+  "description": "SO Chat Upgrade Extension",
+  "version": "0.1.0",
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup"
+  },
+  "icons": {
+    "192": "logo192.png",
+    "512": "logo512.png"
+  },
+  "content_security_policy": "script-src 'self' 'sha256-KKzkIo/nJwrcQExGcUpBI/W/FWCoBy6VwJdw45Zjuos='; object-src 'self'",
+  "permissions": []
+}
