@@ -1,17 +1,26 @@
-
 {
   "manifest_version": 2,
   "name": "Locke-222",
   "description": "SO Chat Upgrade Extension",
   "version": "0.1.0",
-  "browser_action": {
-    "default_popup": "index.html",
-    "default_title": "Open the popup"
-  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.stackoverflow.com/rooms/*"],
+      "css": ["static/css/main.css"],
+      "js": ["static/js/main.js"]
+    }
+  ],
   "icons": {
     "192": "logo192.png",
     "512": "logo512.png"
   },
-  "content_security_policy": "script-src 'self' 'sha256-KKzkIo/nJwrcQExGcUpBI/W/FWCoBy6VwJdw45Zjuos='; object-src 'self'",
-  "permissions": []
+  "web_accessible_resources": [
+    "*"
+  ],
+  "comments": {
+    "web_accessible_resources": [
+      "This wildcard needs to be replaced with specific file references before we ship the extension",
+      "https://developer.chrome.com/extensions/manifest/web_accessible_resources"
+    ]
+  }
 }
