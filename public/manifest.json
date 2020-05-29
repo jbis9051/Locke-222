@@ -5,9 +5,15 @@
   "version": "0.1.0",
   "content_scripts": [
     {
-      "matches": ["https://chat.stackoverflow.com/rooms/*"],
-      "css": ["static/css/main.css"],
-      "js": ["static/js/main.js"]
+      "matches": [
+        "https://chat.stackoverflow.com/rooms/*"
+      ],
+      "css": [
+        "static/css/main.css"
+      ],
+      "js": [
+        "static/js/main.js"
+      ]
     }
   ],
   "icons": {
