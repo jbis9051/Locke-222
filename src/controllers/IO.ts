@@ -1,6 +1,8 @@
 import formEncoder from "../helpers/formEncoder";
 import RoomStore from "../stores/RoomStore";
 import {reaction} from "mobx";
+import {UserObject} from "../interfaces/UserObject";
+import User from "../models/User";
 
 class IO {
     private fkey: string;
@@ -14,6 +16,7 @@ class IO {
 
     async init(){
         await this.setUpWS();
+        await this.setUpRoomMembers();
     }
 
     async setUpWS(){
@@ -47,8 +50,21 @@ class IO {
         this.ws = ws;
     }
 
-    async handleMessage(data: any){
+    async setUpRoomMembers(){
+        // We need to get the room members. Unfortunately, the only AJAX
+        // requests that are available don't give us enough information.
+        // So, we parse HTML and JS with regex!
 
+        const roomMembersRegex = /CHAT.RoomUsers.initPresent\(([\s\S]*)\);/;
+        const html = await fetch(`/rooms/${RoomStore.id}`).then(resp => resp.text());
+        const members: UserObject[] = JSON.parse(html.match(roomMembersRegex)![1]);
+        members
+            .map(userObject => User.fromUserObject(userObject))
+            .forEach(user => RoomStore.addUser(user));
+    }
+
+    async handleMessage(data: any){
+        
     }
 }
 const fkey = (document.querySelector('#fkey')! as HTMLInputElement).value;
