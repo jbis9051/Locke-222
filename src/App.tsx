@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {PageJSData} from "./interfaces/PageJSData";
 import IO from "./controllers/IO";
 import User from "./models/User";
 import RoomStore from "./stores/RoomStore";
@@ -9,7 +8,7 @@ import RoomStore from "./stores/RoomStore";
 function App() {
     const [isReady, setIsReady] = useState(false);
 
-    IO.init().then(() => setIsReady(true));
+    IO.init(parseInt(window.location.href.match(/\/rooms\/([0-9]+)\//)![1])).then(() => setIsReady(true));
 
     return (
         <div className="App">

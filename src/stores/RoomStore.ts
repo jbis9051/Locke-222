@@ -3,6 +3,9 @@ import User from "../models/User";
 import Message from "../models/Message";
 
 class RoomStore {
+    set id(value: number) {
+        this._id = value;
+    }
     set description(value: string) {
         this._description = value;
     }

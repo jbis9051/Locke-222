@@ -3,6 +3,7 @@ import RoomStore from "../stores/RoomStore";
 import {reaction} from "mobx";
 import {UserObject} from "../interfaces/UserObject";
 import User from "../models/User";
+import cheerio from 'cheerio';
 
 class IO {
     private fkey: string;
@@ -14,7 +15,9 @@ class IO {
 
     }
 
-    async init(){
+
+    async init(roomId: number) {
+        RoomStore.id = roomId;
         await this.setUpWS();
         await this.setUpRoomInfo();
         await this.setUpRoomMembers();
@@ -43,7 +46,7 @@ class IO {
         });
         ws.addEventListener("close", (code) => {
             console.error(`WebSocket Closed: ${code}`);
-            this.setUpWS();
+            //this.setUpWS();
         });
         if(this.ws){
             this.ws.close();
@@ -54,11 +57,32 @@ class IO {
     async setUpRoomMembers(){
         // We need to get the room members. Unfortunately, the only AJAX
         // requests that are available don't give us enough information.
-        // So, we parse HTML and JS with regex!
+        // So we do this.
 
-        const roomMembersRegex = /CHAT.RoomUsers.initPresent\(([\s\S]*)\);/;
         const html = await fetch(`/rooms/${RoomStore.id}`).then(resp => resp.text());
-        const members: UserObject[] = JSON.parse(html.match(roomMembersRegex)![1]);
+        const $_ = cheerio.load(html);
+        let code: string = "";
+        $_('script').each((i, element) => {
+            const innerHTML = $_(element).html()!;
+            if(innerHTML.includes('CHAT.RoomUsers.initPresent')){
+                code = innerHTML;
+            }
+        })
+        let members: UserObject[];
+        const CHAT = {
+            RoomUsers: {
+                initPresent: (peoples: UserObject[]) => {
+                    members = peoples;
+                }
+            }
+        }
+
+        let SERVER_TIME_OFFSET  = 0;
+        const $ = (func: any) => { func() };
+        const StartChat = () => {};
+        eval(code);
+
+        // @ts-ignore
         members
             .map(userObject => User.fromUserObject(userObject))
             .forEach(user => RoomStore.addUser(user));
