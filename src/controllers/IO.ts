@@ -16,6 +16,7 @@ class IO {
 
     async init(){
         await this.setUpWS();
+        await this.setUpRoomInfo();
         await this.setUpRoomMembers();
     }
 
@@ -63,8 +64,14 @@ class IO {
             .forEach(user => RoomStore.addUser(user));
     }
 
+    async setUpRoomInfo(){
+        const data = await fetch(`/rooms/thumbs/${RoomStore.id}`).then(resp => resp.json());
+        RoomStore.name = data.name;
+        RoomStore.description = data.description;
+    }
+
     async handleMessage(data: any){
-        
+
     }
 }
 const fkey = (document.querySelector('#fkey')! as HTMLInputElement).value;
