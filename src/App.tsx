@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import IO from "./controllers/IO";
@@ -8,7 +8,9 @@ import RoomStore from "./stores/RoomStore";
 function App() {
     const [isReady, setIsReady] = useState(false);
 
-    IO.init(parseInt(window.location.href.match(/\/rooms\/([0-9]+)\//)![1])).then(() => setIsReady(true));
+    useEffect(() => {
+        IO.init(parseInt(window.location.href.match(/\/rooms\/([0-9]+)\//)![1])).then(() => setIsReady(true));
+    }, []);
 
     return (
         <div className="App">

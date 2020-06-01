@@ -1,9 +1,11 @@
 import formEncoder from "../helpers/formEncoder";
 import RoomStore from "../stores/RoomStore";
-import {reaction} from "mobx";
 import {UserObject} from "../interfaces/UserObject";
 import User from "../models/User";
 import cheerio from 'cheerio';
+import {EventType, MessageEvent, RoomEvent, UserJoinEvent, WebSocketEvent} from "../interfaces/WebSocketEvent";
+import Message from "../models/Message";
+import {RoomInfoResponse, UserInfoResponse} from "../interfaces/APIResponses";
 
 class IO {
     private fkey: string;
@@ -11,8 +13,6 @@ class IO {
 
     constructor(fkey: string) {
         this.fkey = fkey;
-        //reaction(() => RoomStore.id, () => this.init()); // When the room id changes reinitialize
-
     }
 
 
@@ -23,7 +23,7 @@ class IO {
         await this.setUpRoomMembers();
     }
 
-    async setUpWS(){
+    async setUpWS() {
         const data = await fetch('/ws-auth', {
             method: 'POST',
             headers: {
@@ -44,17 +44,17 @@ class IO {
             console.error(`WebSocket Errored: ${event.toString()}`);
             //this.setUpWS();
         });
-        ws.addEventListener("close", (code) => {
-            console.error(`WebSocket Closed: ${code}`);
+        ws.addEventListener("close", (event) => {
+            console.error(`WebSocket Closed: ${event.toString()}`);
             //this.setUpWS();
         });
-        if(this.ws){
+        if (this.ws) {
             this.ws.close();
         }
         this.ws = ws;
     }
 
-    async setUpRoomMembers(){
+    async setUpRoomMembers() {
         // We need to get the room members. Unfortunately, the only AJAX
         // requests that are available don't give us enough information.
         // So we do this.
@@ -64,7 +64,7 @@ class IO {
         let code: string = "";
         $_('script').each((i, element) => {
             const innerHTML = $_(element).html()!;
-            if(innerHTML.includes('CHAT.RoomUsers.initPresent')){
+            if (innerHTML.includes('CHAT.RoomUsers.initPresent')) {
                 code = innerHTML;
             }
         })
@@ -77,9 +77,12 @@ class IO {
             }
         }
 
-        let SERVER_TIME_OFFSET  = 0;
-        const $ = (func: any) => { func() };
-        const StartChat = () => {};
+        let SERVER_TIME_OFFSET = 0;
+        const $ = (func: any) => {
+            func()
+        };
+        const StartChat = () => {
+        };
         eval(code);
 
         // @ts-ignore
@@ -88,15 +91,56 @@ class IO {
             .forEach(user => RoomStore.addUser(user));
     }
 
-    async setUpRoomInfo(){
-        const data = await fetch(`/rooms/thumbs/${RoomStore.id}`).then(resp => resp.json());
+    async setUpRoomInfo() {
+        const data: RoomInfoResponse = await fetch(`/rooms/thumbs/${RoomStore.id}`).then(resp => resp.json());
         RoomStore.name = data.name;
         RoomStore.description = data.description;
     }
 
-    async handleMessage(data: any){
+    async handleMessage(event: WebSocketEvent) {
+        const roomKey = `r${RoomStore.id}`;
+        if (!event.hasOwnProperty(roomKey)) {
+            return;
+        }
+        if (!event[roomKey].hasOwnProperty("e")) {
+            return;
+        }
+        const events = (event[roomKey] as RoomEvent).e;
 
+        const eventFunctions = {
+            [EventType.NEW_MESSAGE]: (event: MessageEvent) => {
+                const user = RoomStore.getUserById(event.user_id);
+                if (!user) {
+                    return;
+                }
+                RoomStore.addMessage(new Message(event.message_id, user, event.content))
+            },
+            [EventType.USER_JOIN]: async (event: UserJoinEvent) => {
+                const userData = await this.getUserInfo(event.user_id);
+                const user = User.fromUserObject(userData);
+                RoomStore.addUser(user);
+            }
+        }
+
+        events.forEach((roomEvent) => {
+           if(eventFunctions.hasOwnProperty(roomEvent.event_type)){
+               eventFunctions[roomEvent.event_type](roomEvent as any);
+           }
+        });
+    }
+
+    async getUserInfo(userId: number) {
+        const data: UserInfoResponse = await fetch('/user/info', {
+            method: 'POST',
+            body: formEncoder({
+                ids: userId,
+                roomId: RoomStore.id
+            })
+        }).then(resp => resp.json());
+
+        return data.users[0];
     }
 }
+
 const fkey = (document.querySelector('#fkey')! as HTMLInputElement).value;
-export default  new IO(fkey);
+export default new IO(fkey);

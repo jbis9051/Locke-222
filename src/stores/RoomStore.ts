@@ -25,6 +25,14 @@ class RoomStore {
     addUser(user: User){
         this.users.push(user);
     }
+
+    addMessage(message: Message){
+        this.messages.push(message);
+    }
+
+    getUserById(userId: number){
+        return this.users.find((user: User) => user.id === userId);
+    }
 }
 
 export default new RoomStore();
