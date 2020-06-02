@@ -33,6 +33,10 @@ class RoomStore {
     getUserById(userId: number){
         return this.users.find((user: User) => user.id === userId);
     }
+
+    getUserByMentionString(mentionString: string){
+        return this.users.find(user => user.name.replace(/\s/, '') === mentionString)
+    }
 }
 
 export default new RoomStore();
