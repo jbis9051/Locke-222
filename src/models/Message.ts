@@ -1,6 +1,7 @@
 import {computed, observable} from "mobx";
 import User from "./User";
 import RoomStore from "../stores/RoomStore";
+import {htmlToClassicMarkdown} from "../helpers/markdownHelper";
 
 interface Mention {
     username: string,
@@ -45,7 +46,7 @@ class Message {
     }
 
     parseContent(){
-        this.content = this.rawContent; // TODO strip tags and stuffs
+        this.content = htmlToClassicMarkdown(this.rawContent);
         const matches = Array.from(this.content.matchAll(/@([^\s]+)/));
         matches.forEach(mention => {
            const user =  RoomStore.getUserByMentionString(mention[1]);

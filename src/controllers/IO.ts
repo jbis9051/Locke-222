@@ -2,7 +2,7 @@ import formEncoder from "../helpers/formEncoder";
 import RoomStore from "../stores/RoomStore";
 import {UserObject} from "../interfaces/UserObject";
 import User from "../models/User";
-import cheerio from 'cheerio';
+import {parse} from 'node-html-parser';
 import {EventType, MessageEvent, RoomEvent, UserJoinEvent, WebSocketEvent} from "../interfaces/WebSocketEvent";
 import Message from "../models/Message";
 import {RoomInfoResponse, UserInfoResponse} from "../interfaces/APIResponses";
@@ -60,10 +60,10 @@ class IO {
         // So we do this.
 
         const html = await fetch(`/rooms/${RoomStore.id}`).then(resp => resp.text());
-        const $_ = cheerio.load(html);
+        const document = parse(html);
         let code: string = "";
-        $_('script').each((i, element) => {
-            const innerHTML = $_(element).html()!;
+        document.querySelectorAll('script').forEach(( element) => {
+            const innerHTML = element.rawText;
             if (innerHTML.includes('CHAT.RoomUsers.initPresent')) {
                 code = innerHTML;
             }
