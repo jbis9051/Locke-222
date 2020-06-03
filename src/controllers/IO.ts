@@ -6,6 +6,7 @@ import {parse} from 'node-html-parser';
 import {EventType, MessageEvent, RoomEvent, UserJoinEvent, WebSocketEvent} from "../interfaces/WebSocketEvent";
 import Message from "../models/Message";
 import {RoomInfoResponse, UserInfoResponse} from "../interfaces/APIResponses";
+import UserStore from "../stores/UserStore";
 
 class IO {
     private fkey: string;
@@ -116,9 +117,11 @@ class IO {
                 RoomStore.addMessage(new Message(event.message_id, user, event.content))
             },
             [EventType.USER_JOIN]: async (event: UserJoinEvent) => {
-                const userData = await this.getUserInfo(event.user_id);
-                const user = User.fromUserObject(userData);
+                const user = await UserStore.getUserById(event.user_id);
                 RoomStore.addUser(user);
+            },
+            [EventType.USER_LEAVE]:  (event: UserJoinEvent) => {
+                RoomStore.removeUser(event.user_id);
             }
         }
 
@@ -129,7 +132,22 @@ class IO {
         });
     }
 
-    async getUserInfo(userId: number) {
+    async send(content: string){
+        const resp = await fetch(`/chats/${RoomStore.id}/messages/new`, {
+            method: "POST",
+            body: formEncoder({
+                text: content,
+                fkey: this.fkey
+            })
+        });
+        const data = await resp.text();
+        if(resp.status === 200){
+            return true;
+        }
+        throw data;
+    }
+
+    async getUserInfo(userId: number): Promise<UserObject> {
         const data: UserInfoResponse = await fetch('/user/info', {
             method: 'POST',
             body: formEncoder({
