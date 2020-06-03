@@ -61,9 +61,9 @@ class IO {
         // So we do this.
 
         const html = await fetch(`/rooms/${RoomStore.id}`).then(resp => resp.text());
-        const document = parse(html);
+        const doc = parse(html, {script: true});
         let code: string = "";
-        document.querySelectorAll('script').forEach(( element) => {
+        doc.querySelectorAll('script').forEach(( element) => {
             const innerHTML = element.rawText;
             if (innerHTML.includes('CHAT.RoomUsers.initPresent')) {
                 code = innerHTML;
