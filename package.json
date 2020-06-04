@@ -66,8 +66,7 @@
     "url-loader": "2.3.0",
     "webpack": "4.42.0",
     "webpack-dev-server": "3.10.3",
-    "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1"
+    "webpack-manifest-plugin": "2.2.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
@@ -146,6 +145,9 @@
     ]
   },
   "devDependencies": {
-    "prettier": "^2.0.5"
+    "copy-webpack-plugin": "^6.0.2",
+    "prettier": "^2.0.5",
+    "webpack-extension-reloader": "^1.1.4",
+    "webpack-merge": "^4.2.2"
   }
 }

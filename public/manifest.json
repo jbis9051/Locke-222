@@ -3,6 +3,11 @@
   "name": "Locke-222",
   "description": "SO Chat Upgrade Extension",
   "version": "0.1.0",
+  "background": {
+    "scripts": [
+      "static/js/background.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [

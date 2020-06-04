@@ -51,6 +51,7 @@ const resolveModule = (resolveFn, filePath) => {
 // config after eject: we're in ./config/
 module.exports = {
     entryFile: resolveModule(resolveApp, 'src/entry'),
+    backgroundFile: resolveModule(resolveApp, 'src/background'),
     dotenv: resolveApp('.env'),
     appPath: resolveApp('.'),
     appBuild: resolveApp('build'),
