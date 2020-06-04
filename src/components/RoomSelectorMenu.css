@@ -1,0 +1,5 @@
+.room-selector {
+    flex-basis: 80px;
+    min-width: 80px;
+    background: blue;
+}

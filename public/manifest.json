@@ -3,10 +3,17 @@
   "name": "Locke-222",
   "description": "SO Chat Upgrade Extension",
   "version": "0.1.0",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "*://chat.stackoverflow.com/rooms/*",
+    "*://cdn-chat.sstatic.net/chat/Js/*"
+  ],
   "background": {
     "scripts": [
       "static/js/background.js"
-    ]
+    ],
+    "persistent": true
   },
   "content_scripts": [
     {
