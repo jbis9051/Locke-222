@@ -1,28 +1,28 @@
-import {computed, observable} from "mobx";
-import User from "./User";
-import RoomStore from "../stores/RoomStore";
-import {htmlToClassicMarkdown} from "../helpers/markdownHelper";
+import { computed, observable } from 'mobx';
+import User from './User';
+import RoomStore from '../stores/RoomStore';
+import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 
 interface Mention {
-    username: string,
-    id: number | null
+    username: string;
+    id: number | null;
 }
 
 class Message {
     @observable private id: number;
     @observable private user: User;
-    @observable private content: string = ""; // parsed content, strip SO tags and add our own
+    @observable private content: string = ''; // parsed content, strip SO tags and add our own
     @observable private rawContent: string; // raw content
     @observable private dateReceived: Date;
     @observable private mentions: Mention[] = [];
     @observable private parentId: number | null = null;
     @observable private showParent: boolean = false;
 
-    get isHardReply(){
+    get isHardReply() {
         return this.showParent;
     }
 
-    get isMention(){
+    get isMention() {
         return this.mentions.length > 0;
     }
 
@@ -31,32 +31,31 @@ class Message {
         this.user = user;
         this.rawContent = content;
         this.dateReceived = new Date();
-        if(parentId){
+        if (parentId) {
             this.parentId = parentId;
         }
-        if(showParent) {
+        if (showParent) {
             this.showParent = showParent;
         }
         this.parseContent();
     }
 
-    edit(updatedContent: string){
+    edit(updatedContent: string) {
         this.rawContent = updatedContent;
         this.parseContent();
     }
 
-    parseContent(){
+    parseContent() {
         this.content = htmlToClassicMarkdown(this.rawContent);
         const matches = Array.from(this.content.matchAll(/@([^\s]+)/));
-        matches.forEach(mention => {
-           const user =  RoomStore.getUserByMentionString(mention[1]);
-           if(user){
-               this.mentions.push({username: mention[1], id: user.id})
-           } else {
-               this.mentions.push({username: mention[1], id: null})
-           }
+        matches.forEach((mention) => {
+            const user = RoomStore.getUserByMentionString(mention[1]);
+            if (user) {
+                this.mentions.push({ username: mention[1], id: user.id });
+            } else {
+                this.mentions.push({ username: mention[1], id: null });
+            }
         });
     }
-
 }
 export default Message;

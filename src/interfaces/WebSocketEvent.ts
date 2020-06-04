@@ -23,43 +23,43 @@ export enum EventType { // https://github.com/jbis9051/JamesSOBot/blob/master/do
     TICKER_ADD,
     USER_SUSPENDED = 29,
     USER_MERGE,
-    USER_INFO_CHANGED = 34
+    USER_INFO_CHANGED = 34,
 }
 
 export interface TikTokEvent {
-    "t": number,
-    "d": number
+    t: number;
+    d: number;
 }
 
 export interface MessageEvent {
-        "event_type": EventType.NEW_MESSAGE,
-        "time_stamp": number,
-        "content": string,
-        "id": number,
-        "user_id": number,
-        "user_name": string,
-        "room_id": number,
-        "room_name": string,
-        "message_id": number
+    event_type: EventType.NEW_MESSAGE;
+    time_stamp: number;
+    content: string;
+    id: number;
+    user_id: number;
+    user_name: string;
+    room_id: number;
+    room_name: string;
+    message_id: number;
 }
 
 export interface UserJoinEvent {
-        "event_type": EventType.USER_JOIN,
-        "time_stamp": number,
-        "id": number,
-        "user_id": number,
-        "target_user_id": number,
-        "user_name": string,
-        "room_id": number,
-        "room_name": string
+    event_type: EventType.USER_JOIN;
+    time_stamp: number;
+    id: number;
+    user_id: number;
+    target_user_id: number;
+    user_name: string;
+    room_id: number;
+    room_name: string;
 }
 
 export interface WebSocketEvent {
     [key: string]: RoomEvent | TikTokEvent;
 }
 
-export interface  RoomEvent {
-    "e": Array<MessageEvent | UserJoinEvent>,
-    "t": number,
-    "d": number
+export interface RoomEvent {
+    e: Array<MessageEvent | UserJoinEvent>;
+    t: number;
+    d: number;
 }

@@ -1,6 +1,6 @@
-import {observable} from "mobx";
-import User from "../models/User";
-import IO from "../controllers/IO";
+import { observable } from 'mobx';
+import User from '../models/User';
+import IO from '../controllers/IO';
 
 class UserStore {
     @observable private users: User[] = []; // users cache
@@ -17,14 +17,14 @@ class UserStore {
         if (cached) {
             return cached;
         }
-        const info = await IO.getUserInfo(userId)
+        const info = await IO.getUserInfo(userId);
         const user = User.fromUserObject(info);
         this.addUser(user);
         return user;
     }
 
     getUserByMentionString(mentionString: string) {
-        return this.users.find(user => user.name.replace(/\s/, '') === mentionString)
+        return this.users.find((user) => user.name.replace(/\s/, '') === mentionString);
     }
 }
 

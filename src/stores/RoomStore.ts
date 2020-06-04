@@ -1,7 +1,7 @@
-import {observable} from "mobx";
-import User from "../models/User";
-import Message from "../models/Message";
-import UserStore from "./UserStore";
+import { observable } from 'mobx';
+import User from '../models/User';
+import Message from '../models/Message';
+import UserStore from './UserStore';
 
 class RoomStore {
     set id(value: number) {
@@ -18,30 +18,30 @@ class RoomStore {
     }
 
     @observable private _id: number = 0;
-    @observable private _name: string = "";
-    @observable private _description: string = "";
+    @observable private _name: string = '';
+    @observable private _description: string = '';
     @observable private users: User[] = []; // list of users currently in the room
     @observable private messages: Message[] = [];
 
-    addUser(user: User){
+    addUser(user: User) {
         UserStore.addUser(user); // add them to the user store
         this.users.push(user);
     }
 
-    removeUser(userId: number){
-        this.users = this.users.filter(user => user.id !== userId);
+    removeUser(userId: number) {
+        this.users = this.users.filter((user) => user.id !== userId);
     }
 
-    addMessage(message: Message){
+    addMessage(message: Message) {
         this.messages.push(message);
     }
 
-    getUserById(userId: number){
+    getUserById(userId: number) {
         return this.users.find((user: User) => user.id === userId);
     }
 
-    getUserByMentionString(mentionString: string){
-        return this.users.find(user => user.name.replace(/\s/, '') === mentionString)
+    getUserByMentionString(mentionString: string) {
+        return this.users.find((user) => user.name.replace(/\s/, '') === mentionString);
     }
 }
 
