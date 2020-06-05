@@ -1,11 +1,11 @@
 import { useObserver } from 'mobx-react';
 import React, { useState } from 'react';
 import './RoomTopBar.css';
-import RoomStore from '../../stores/RoomStore';
+import RoomStore from '../../../stores/RoomStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import RoomDropDown from './RoomDropDown';
-import { parseMarkdown } from '../../helpers/markdownHelper';
+import { parseMarkdown } from '../../../helpers/markdownHelper';
 
 export default function RoomTopBar() {
     const [roomMenuOpen, setRoomMenuOpen] = useState(false);

@@ -1,0 +1,7 @@
+.room-info {
+    width: 250px;
+    padding: 10px;
+    background: #2e3137;
+    display: flex;
+    flex-direction: column;
+}

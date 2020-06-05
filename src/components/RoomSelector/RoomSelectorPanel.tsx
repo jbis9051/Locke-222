@@ -4,6 +4,8 @@ import RoomItem from './RoomItem';
 import CurrentUserStore from '../../stores/CurrentUserStore';
 import abbreviateString from '../../helpers/abbreviateString';
 import { useObserver } from 'mobx-react';
+import IO from '../../controllers/IO';
+import RoomStore from '../../stores/RoomStore';
 
 export default function RoomSelectorPanel() {
     return useObserver(() => (
@@ -13,6 +15,10 @@ export default function RoomSelectorPanel() {
             {CurrentUserStore.favoriteRooms.map((room) => (
                 <RoomItem
                     key={room.id}
+                    onClick={() => {
+                        IO.init(room.id)
+                    }}
+                    selected={room.id === RoomStore.id}
                     longname={room.name}
                     shortname={abbreviateString(room.name)}
                 />

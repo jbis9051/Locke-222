@@ -4,6 +4,9 @@ import Message from '../models/Message';
 import UserStore from './UserStore';
 
 class RoomStore {
+    get users(): User[] {
+        return this._users;
+    }
     get description(): string {
         return this._description;
     }
@@ -26,16 +29,16 @@ class RoomStore {
     @observable private _id: number = 0;
     @observable private _name: string = '';
     @observable private _description: string = '';
-    @observable private users: User[] = []; // list of users currently in the room
+    @observable private _users: User[] = []; // list of users currently in the room
     @observable private messages: Message[] = [];
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store
-        this.users.push(user);
+        this._users.push(user);
     }
 
     removeUser(userId: number) {
-        this.users = this.users.filter((user) => user.id !== userId);
+        this._users = this._users.filter((user) => user.id !== userId);
     }
 
     addMessage(message: Message) {
@@ -43,11 +46,11 @@ class RoomStore {
     }
 
     getUserById(userId: number) {
-        return this.users.find((user: User) => user.id === userId);
+        return this._users.find((user: User) => user.id === userId);
     }
 
     getUserByMentionString(mentionString: string) {
-        return this.users.find((user) => user.name.replace(/\s/, '') === mentionString);
+        return this._users.find((user) => user.name.replace(/\s/, '') === mentionString);
     }
 }
 

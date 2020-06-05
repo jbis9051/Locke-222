@@ -2,6 +2,9 @@ import { observable } from 'mobx';
 import { UserObject } from '../interfaces/UserObject';
 
 class User {
+    get image_url(): string | null {
+        return this._image_url;
+    }
     get name(): string {
         return this._name;
     }
@@ -11,7 +14,7 @@ class User {
 
     @observable private _id: number;
     @observable private _name: string;
-    @observable private image_url: string | null;
+    @observable private _image_url: string | null;
     @observable private is_moderator: boolean;
     @observable private is_owner: boolean;
 
@@ -24,7 +27,7 @@ class User {
     ) {
         this._id = id;
         this._name = name;
-        this.image_url = image_url;
+        this._image_url = image_url;
         this.is_moderator = is_moderator;
         this.is_owner = is_owner;
     }
@@ -33,8 +36,8 @@ class User {
         let imageURL = userObject.email_hash;
         if (imageURL.startsWith('!')) {
             imageURL = imageURL.substring(1);
-        } else {
-            imageURL = `https://www.gravatar.com/avatar/${imageURL}?d=identicon&r=PG`;
+        } else { // TODO we need to detect somehow if they have an avatar or not
+            imageURL = `https://www.gravatar.com/avatar/${imageURL}`; // d=identicon&r=PG
         }
         return new User(
             userObject.id,

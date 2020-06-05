@@ -19,7 +19,10 @@ class IO {
         void this.setUpFavoriteRooms();
     }
 
-    async init(roomId: number) {
+    async init(roomId: number, force: boolean = false) {
+        if(!force && roomId === RoomStore.id){
+            return;
+        }
         RoomStore.id = roomId;
         await this.setUpWS();
         await this.setUpRoomInfo();
@@ -84,13 +87,20 @@ class IO {
         const $ = (func: any) => {
             func();
         };
-        const StartChat = () => {};
+        let currentUser: number = 0;
+        const StartChat = (_: any, currentUserId: number) => {
+            currentUser = currentUserId;
+        };
         eval(code);
 
         // @ts-ignore
         members
             .map((userObject) => User.fromUserObject(userObject))
             .forEach((user) => RoomStore.addUser(user));
+        
+        if(currentUser > 0){
+            CurrentUserStore.user = await UserStore.getUserById(currentUser);
+        }
     }
 
     async setUpRoomInfo() {

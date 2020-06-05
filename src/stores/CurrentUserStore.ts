@@ -3,10 +3,16 @@ import User from '../models/User';
 import { RoomObject } from '../interfaces/RoomObject';
 
 class CurrentUserStore {
+    set user(value: User | null) {
+        this._user = value;
+    }
+    get user(): User | null {
+        return this._user;
+    }
     get favoriteRooms(): RoomObject[] {
         return this._favoriteRooms;
     }
-    @observable private user: User | null = null;
+    @observable private _user: User | null = null;
     @observable private _favoriteRooms: RoomObject[] = [];
     @observable private fkey: string = '';
 

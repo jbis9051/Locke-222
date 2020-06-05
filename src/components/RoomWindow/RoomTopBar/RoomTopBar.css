@@ -4,6 +4,7 @@
     display: flex;
     align-items: stretch;
     max-width: 100%;
+    position: relative;
 }
 
 .room-top-bar--name-wrapper {

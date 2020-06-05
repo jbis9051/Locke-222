@@ -1,0 +1,15 @@
+.user-item {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+.user-item--name {
+    flex: 1;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+}
