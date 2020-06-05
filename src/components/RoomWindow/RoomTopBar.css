@@ -1,0 +1,32 @@
+.room-top-bar {
+    height: 50px;
+    box-shadow: 0 0 2px #121417;
+    display: flex;
+    align-items: stretch;
+    max-width: 100%;
+}
+
+.room-top-bar--name-wrapper {
+    width: 250px;
+    background: #2e3137;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+}
+
+.room-top-bar--name-wrapper__name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+}
+
+.room-top-bar--description-wrapper {
+    flex: 1;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: auto 0;
+    padding: 10px;
+}

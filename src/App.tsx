@@ -4,7 +4,9 @@ import './App.css';
 import IO from './controllers/IO';
 import User from './models/User';
 import RoomStore from './stores/RoomStore';
-import RoomSelectorPanel from './components/RoomSelectorPanel';
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import RoomSelectorPanel from './components/RoomSelector/RoomSelectorPanel';
+import RoomWindow from './components/RoomWindow/RoomWindow';
 
 function App() {
     const [isReady, setIsReady] = useState(false);
@@ -20,11 +22,7 @@ function App() {
             {isReady ? (
                 <div className={"app-container"}>
                     <RoomSelectorPanel/>
-                    <div className={"room-window"}>
-                        <div className={"left-menu"}></div>
-                        <div className={"main-chat-window"}></div>
-                        <div className={"users-list"}></div>
-                    </div>
+                    <RoomWindow/>
                 </div>
             ) : (
                 <div className={'loader'}>

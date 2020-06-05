@@ -22,6 +22,7 @@ class IO {
 
     constructor(fkey: string) {
         this.fkey = fkey;
+        void this.setUpFavoriteRooms();
     }
 
     async init(roomId: number) {
@@ -29,7 +30,6 @@ class IO {
         await this.setUpWS();
         await this.setUpRoomInfo();
         await this.setUpRoomMembers();
-        await this.setUpFavoriteRooms();
     }
 
     async setUpWS() {

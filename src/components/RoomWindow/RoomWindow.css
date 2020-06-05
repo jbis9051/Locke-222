@@ -1,0 +1,5 @@
+.room-window {
+    flex: 1;
+    background: #35393e;
+    overflow: hidden;
+}

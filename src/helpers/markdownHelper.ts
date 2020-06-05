@@ -53,3 +53,8 @@ export function soMarkdownToClassicMarkdown() {
 export function classicMarkdownToSOMarkdown() {
     // TODO
 }
+
+export function parseMarkdown(markdown: string) {
+    // TODO
+    return markdown;
+}

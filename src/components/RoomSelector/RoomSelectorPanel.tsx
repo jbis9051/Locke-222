@@ -1,11 +1,12 @@
 import './RoomSelectorPanel.css';
 import React from 'react';
 import RoomItem from './RoomItem';
-import CurrentUserStore from '../stores/CurrentUserStore';
-import abbreviateString from '../helpers/abbreviateString';
+import CurrentUserStore from '../../stores/CurrentUserStore';
+import abbreviateString from '../../helpers/abbreviateString';
+import { useObserver } from 'mobx-react';
 
 export default function RoomSelectorPanel() {
-    return (
+    return useObserver(() => (
         <div className={"room-selector"}>
             <RoomItem longname={"All Rooms"} shortname={"All"}/>
             <div className={"room-divider"}/>
@@ -15,5 +16,5 @@ export default function RoomSelectorPanel() {
                 )
             }
         </div>
-    )
+    ));
 }

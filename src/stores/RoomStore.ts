@@ -4,6 +4,12 @@ import Message from '../models/Message';
 import UserStore from './UserStore';
 
 class RoomStore {
+    get description(): string {
+        return this._description;
+    }
+    get name(): string {
+        return this._name;
+    }
     set id(value: number) {
         this._id = value;
     }
