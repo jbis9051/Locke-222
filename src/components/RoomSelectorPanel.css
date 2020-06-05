@@ -1,5 +1,15 @@
 .room-selector {
     flex-basis: 80px;
     min-width: 80px;
-    background: blue;
+    background: #202225;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.room-divider {
+    width: 60%;
+    margin: 5px;
+    height: 3px;
+    background: #333639;
+    border-radius: 7px;
 }

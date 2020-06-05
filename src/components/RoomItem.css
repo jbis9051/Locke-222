@@ -1,0 +1,16 @@
+.room-selector--item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}
+.room-selector--item__bubble {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #373940;
+    font-weight: 700;
+}

@@ -7,11 +7,11 @@ import abbreviateString from '../helpers/abbreviateString';
 export default function RoomSelectorPanel() {
     return (
         <div className={"room-selector"}>
-            <RoomItem longname={"All Rooms"} shortname={"All Rooms"}/>
+            <RoomItem longname={"All Rooms"} shortname={"All"}/>
             <div className={"room-divider"}/>
             {
                 CurrentUserStore.favoriteRooms.map(room =>
-                    <RoomItem longname={room.name} shortname={abbreviateString(room.name)}/>
+                    <RoomItem key={room.id} longname={room.name} shortname={abbreviateString(room.name)}/>
                 )
             }
         </div>

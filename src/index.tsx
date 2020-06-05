@@ -12,7 +12,7 @@ for (let child of body.children) {
     (child as HTMLElement).style.display = 'none';
 }
 
-document.querySelectorAll('script').forEach((scriptTag) => scriptTag.remove()); // this is unnecessary
+document.querySelectorAll('script, link').forEach((scriptTag) => scriptTag.remove()); // this is unnecessary
 
 const root = document.createElement('div');
 root.id = 'locke-root';

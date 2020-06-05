@@ -6,10 +6,10 @@ export default function RoomItem({longname, shortname, imagesrc, onClick}: {long
     const id = Math.random().toString();
     return (
         <div onClick={onClick} className={"room-selector--item"}>
-            <ReactTooltip effect={'solid'}  place={"left"} id={id}>
+            <ReactTooltip backgroundColor={"black"} effect={'solid'}  place={"right"} id={id}>
                 <span>{longname}</span>
             </ReactTooltip>
-            <span data-tip={""} data-for={id}>{shortname}</span>
+            <span data-tip={""} className={"room-selector--item__bubble"} data-for={id}>{shortname}</span>
         </div>
     )
 }

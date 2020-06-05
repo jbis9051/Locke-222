@@ -110,7 +110,7 @@ class IO {
     async setUpFavoriteRooms() {
         const html = await fetch(`/?tab=favorite&sort=active`).then((resp) => resp.text());
         const doc = parse(html);
-        debugger;
+
         if(doc.querySelectorAll('.favorite-room').length === 0){
             return [];
         }
