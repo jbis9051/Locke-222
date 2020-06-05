@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-
 // We can probably eventually remove the old DOM but for now we'll keep it
 
 const body = document.getElementById('chat-body')!;

@@ -1,4 +1,4 @@
-import { computed, observable } from 'mobx';
+import { observable } from 'mobx';
 import User from './User';
 import RoomStore from '../stores/RoomStore';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';

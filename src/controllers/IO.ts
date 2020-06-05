@@ -3,13 +3,7 @@ import RoomStore from '../stores/RoomStore';
 import { UserObject } from '../interfaces/UserObject';
 import User from '../models/User';
 import { parse } from 'node-html-parser';
-import {
-    EventType,
-    MessageEvent,
-    RoomEvent,
-    UserJoinEvent,
-    WebSocketEvent,
-} from '../interfaces/WebSocketEvent';
+import { EventType, MessageEvent, RoomEvent, UserJoinEvent, WebSocketEvent } from '../interfaces/WebSocketEvent';
 import Message from '../models/Message';
 import { RoomInfoResponse, UserInfoResponse } from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
@@ -111,16 +105,16 @@ class IO {
         const html = await fetch(`/?tab=favorite&sort=active`).then((resp) => resp.text());
         const doc = parse(html);
 
-        if(doc.querySelectorAll('.favorite-room').length === 0){
+        if (doc.querySelectorAll('.favorite-room').length === 0) {
             return [];
         }
-        const rooms: RoomObject[] =  doc.querySelectorAll('.roomcard').map(room => {
+        const rooms: RoomObject[] = doc.querySelectorAll('.roomcard').map((room) => {
             const id = parseInt(room.id.match(/[0-9]+/)![0]);
             const name = room.querySelector('.room-name').getAttribute('title');
             return {
                 id,
-                name
-            }
+                name,
+            };
         });
         CurrentUserStore.setFavoriteRooms(rooms);
     }

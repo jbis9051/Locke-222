@@ -4,8 +4,8 @@ import RoomTopBar from './RoomTopBar';
 
 export default function RoomWindow() {
     return (
-        <div className={"room-window"}>
-            <RoomTopBar/>
+        <div className={'room-window'}>
+            <RoomTopBar />
         </div>
-    )
+    );
 }

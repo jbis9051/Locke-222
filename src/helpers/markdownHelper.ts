@@ -1,4 +1,4 @@
-import { parse, TextNode, HTMLElement, Node } from 'node-html-parser';
+import { HTMLElement, Node, parse, TextNode } from 'node-html-parser';
 import decode from 'decode-html';
 
 export function htmlToClassicMarkdown(html: string) {
