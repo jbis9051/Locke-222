@@ -13,6 +13,8 @@ import {
 import Message from '../models/Message';
 import { RoomInfoResponse, UserInfoResponse } from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
+import { RoomObject } from '../interfaces/RoomObject';
+import CurrentUserStore from '../stores/CurrentUserStore';
 
 class IO {
     private fkey: string;
@@ -27,6 +29,7 @@ class IO {
         await this.setUpWS();
         await this.setUpRoomInfo();
         await this.setUpRoomMembers();
+        await this.setUpFavoriteRooms();
     }
 
     async setUpWS() {
@@ -102,6 +105,24 @@ class IO {
         );
         RoomStore.name = data.name;
         RoomStore.description = data.description;
+    }
+
+    async setUpFavoriteRooms() {
+        const html = await fetch(`/?tab=favorite&sort=active`).then((resp) => resp.text());
+        const doc = parse(html);
+        debugger;
+        if(doc.querySelectorAll('.favorite-room').length === 0){
+            return [];
+        }
+        const rooms: RoomObject[] =  doc.querySelectorAll('.roomcard').map(room => {
+            const id = parseInt(room.id.match(/[0-9]+/)![0]);
+            const name = room.querySelector('.room-name').getAttribute('title');
+            return {
+                id,
+                name
+            }
+        });
+        CurrentUserStore.setFavoriteRooms(rooms);
     }
 
     async handleMessage(event: WebSocketEvent) {
