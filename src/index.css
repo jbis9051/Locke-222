@@ -1,12 +1,14 @@
+* {
+    box-sizing: border-box;
+}
+
 html, body {
     height: 100%;
 }
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #efefef;
@@ -19,4 +21,7 @@ code {
 
 #locke-root {
     height: 100%;
+}
+.react-tooltip-clickable {
+    pointer-events: auto;
 }

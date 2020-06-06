@@ -6,7 +6,7 @@ class UserStore {
     @observable private users: User[] = []; // users cache
 
     addUser(user: User) {
-        if (this.users.find((user: User) => user.id === user.id)) {
+        if (this.users.find((aUser: User) => aUser.id === user.id)) {
             return;
         }
         this.users.push(user);

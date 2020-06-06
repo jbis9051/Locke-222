@@ -93,11 +93,13 @@ class IO {
         };
         eval(code);
 
+        RoomStore.clearUsers();
+
         // @ts-ignore
         members
             .map((userObject) => User.fromUserObject(userObject))
             .forEach((user) => RoomStore.addUser(user));
-        
+
         if(currentUser > 0){
             CurrentUserStore.user = await UserStore.getUserById(currentUser);
         }

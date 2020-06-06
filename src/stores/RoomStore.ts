@@ -37,6 +37,10 @@ class RoomStore {
         this._users.push(user);
     }
 
+    clearUsers(){
+        this._users = [];
+    }
+
     removeUser(userId: number) {
         this._users = this._users.filter((user) => user.id !== userId);
     }

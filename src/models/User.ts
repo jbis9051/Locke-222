@@ -2,6 +2,12 @@ import { observable } from 'mobx';
 import { UserObject } from '../interfaces/UserObject';
 
 class User {
+    get is_owner(): boolean {
+        return this._is_owner;
+    }
+    get is_moderator(): boolean {
+        return this._is_moderator;
+    }
     get image_url(): string | null {
         return this._image_url;
     }
@@ -15,8 +21,8 @@ class User {
     @observable private _id: number;
     @observable private _name: string;
     @observable private _image_url: string | null;
-    @observable private is_moderator: boolean;
-    @observable private is_owner: boolean;
+    @observable private _is_moderator: boolean;
+    @observable private _is_owner: boolean;
 
     constructor(
         id: number,
@@ -28,8 +34,8 @@ class User {
         this._id = id;
         this._name = name;
         this._image_url = image_url;
-        this.is_moderator = is_moderator;
-        this.is_owner = is_owner;
+        this._is_moderator = is_moderator;
+        this._is_owner = is_owner;
     }
 
     static fromUserObject(userObject: UserObject): User {
