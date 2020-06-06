@@ -4,15 +4,17 @@ import './PopOutMenu.css';
 const OFFSET_LEFT = -10;
 const BOTTOM_OFFSET = 10;
 
-export default function PopOutMenu({ children, visible, element }: { children: React.ReactElement, visible: boolean, element: Element }) {
+export default function PopOutMenu({ children, visible, element }: { children: React.ReactElement, visible: boolean, element: () => Element }) {
     const [styles, setStyles] = useState({});
     const [viewportHeight, setViewportHeight] = useState(document.documentElement.clientHeight);
+    const [viewportWidth, setViewportWidth] = useState(document.documentElement.clientWidth);
 
     const popOutMenu = useCallback((node) => {
-        if (!node || !element) {
+        const el = element();
+        if (!node || !el) {
             return;
         }
-        const rect = element.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
         const location: any = {
             top: rect.top + document.body.scrollTop,
             left: rect.left + document.body.scrollLeft + OFFSET_LEFT,
@@ -23,12 +25,13 @@ export default function PopOutMenu({ children, visible, element }: { children: R
             location.bottom = BOTTOM_OFFSET;
         }
         setStyles(location);
-    }, []);
+    }, [viewportHeight, viewportWidth]);
 
 
     useEffect(() => {
         function updateViewportMeasurements() {
             setViewportHeight(document.documentElement.clientHeight);
+            setViewportWidth(document.documentElement.clientWidth);
         }
 
         window.addEventListener('resize', updateViewportMeasurements);

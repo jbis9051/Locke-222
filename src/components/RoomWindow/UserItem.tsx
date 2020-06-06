@@ -28,7 +28,7 @@ export default function UserItem({ user }: { user: User }) {
                 <img className={'user-item__image'} width={'30px'} height={'30px'} src={user.image_url + '?s=42'}/>
                 <span className={'user-item--name'}><span>{user.name}</span></span>
             </div>
-            <PopOutMenu element={tooltipRef.current!} visible={visible}>
+            <PopOutMenu element={() => tooltipRef.current!} visible={visible}>
                 <h1>{user.name}</h1>
             </PopOutMenu>
         </div>
