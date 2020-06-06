@@ -70,5 +70,10 @@
     font-size: 12px;
     text-transform: uppercase;
     color: rgba(183, 183, 183, 0.82);
-    margin-bottom: 7px;
+    margin-top: 7px;
+    margin-bottom: 3px;
+}
+
+.user-popout-menu--user-info .user-popout-menu--user-bio--topic:first-child {
+    margin-top: 0;
 }

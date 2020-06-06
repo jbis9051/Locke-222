@@ -11,7 +11,7 @@ import {
     WebSocketEvent,
 } from '../interfaces/WebSocketEvent';
 import Message from '../models/Message';
-import { RoomInfoResponse, UserInfoResponse } from '../interfaces/APIResponses';
+import { RoomInfoResponse, ThumbsResponse, UserInfoResponse } from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
 import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
@@ -198,6 +198,10 @@ class IO {
         }).then((resp) => resp.json());
 
         return data.users[0];
+    }
+
+    async getUserThumb(userId: number): Promise<ThumbsResponse> {
+        return await fetch(`/users/thumbs/${userId}`).then((resp) => resp.json());
     }
 }
 

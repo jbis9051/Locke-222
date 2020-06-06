@@ -1,7 +1,9 @@
 import User from '../../models/User';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './UserItem.css';
 import PopOutMenu from '../PopOutMenu';
+import IO from '../../controllers/IO';
+import { ThumbsResponse } from '../../interfaces/APIResponses';
 
 export default function UserItem({
     user,
@@ -12,6 +14,7 @@ export default function UserItem({
 }) {
     let tooltipRef = useRef(null);
     const [visible, setVisible] = useState(false);
+    const [userData, setUserData] = useState<ThumbsResponse | null>(null);
 
     function tooltipOpen() {
         if (tooltipRef) {
@@ -30,6 +33,19 @@ export default function UserItem({
         roles.push('Member');
     }
 
+    useEffect(() => {
+        if (visible) {
+            IO.getUserThumb(user.id).then((thumb) => {
+                setUserData(thumb);
+            });
+        }
+    }, [visible]);
+
+    function shouldClose() {
+        setUserData(null);
+        setVisible(false);
+    }
+
     return (
         <div onClick={(e) => e.stopPropagation()} className={'user-item-wrapper'}>
             <div ref={tooltipRef} onClick={tooltipOpen} className={'user-item'}>
@@ -44,7 +60,7 @@ export default function UserItem({
                 </span>
             </div>
             <PopOutMenu
-                shouldClose={() => setVisible(false)}
+                shouldClose={shouldClose}
                 direction={popupDirection}
                 element={() => tooltipRef.current!}
                 visible={visible}
@@ -59,9 +75,17 @@ export default function UserItem({
                     </div>
                     <div className={'user-popout-menu--user-bio'}>
                         <div className={'user-popout-menu--user-bio--topic'}>Role</div>
-                        {roles.map((role, index) => (
-                            <span key={index}>{role}</span>
-                        ))}
+                        <span>{roles.join(', ')}</span>
+                        {userData ? (
+                            <React.Fragment>
+                                <div className={'user-popout-menu--user-bio--topic'}>
+                                    Reputation
+                                </div>
+                                <span>{userData.reputation}</span>
+                                <div className={'user-popout-menu--user-bio--topic'}>Bio</div>
+                                <span>{userData.user_message}</span>
+                            </React.Fragment>
+                        ) : null}
                     </div>
                 </div>
             </PopOutMenu>

@@ -3,7 +3,7 @@ import './PopOutMenu.css';
 
 const OFFSET_X = 20;
 const BOTTOM_OFFSET = 10;
-let needsToClose: null | (() => void) = null; // TODO this is really bad
+let needsToClose: null | { close: () => void; element: Element } = null; // TODO this is really bad
 
 export default function PopOutMenu({
     children,
@@ -46,7 +46,7 @@ export default function PopOutMenu({
             }
             setStyles(location);
         },
-        [viewportHeight, viewportWidth]
+        [viewportHeight, viewportWidth, children]
     );
 
     useEffect(() => {
@@ -64,13 +64,16 @@ export default function PopOutMenu({
             return;
         }
         if (visible) {
-            if (needsToClose && needsToClose !== shouldClose) {
-                needsToClose();
+            if (needsToClose?.element !== element()) {
+                needsToClose?.close();
             }
-            needsToClose = shouldClose;
+            needsToClose = {
+                element: element(),
+                close: shouldClose,
+            };
             window.addEventListener('click', shouldClose);
         } else {
-            if (needsToClose === shouldClose) {
+            if (needsToClose?.element === element()) {
                 needsToClose = null;
             }
             window.removeEventListener('click', shouldClose);
