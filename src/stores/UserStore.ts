@@ -26,6 +26,10 @@ class UserStore {
     getUserByMentionString(mentionString: string) {
         return this.users.find((user) => user.name.replace(/\s/, '') === mentionString);
     }
+
+    clearStore() {
+        this.users = [];
+    }
 }
 
 export default new UserStore();

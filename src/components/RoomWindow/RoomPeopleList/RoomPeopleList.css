@@ -8,8 +8,9 @@
     font-size: 12px;
     text-transform: uppercase;
     padding-left: 5px;
-    color: rgba(183,183,183,0.82);
+    color: rgba(183, 183, 183, 0.82);
     margin-top: 20px;
+    margin-bottom: 7px;
 }
 .room-people-list .room-people-list-title:first-child {
     margin-top: 0;

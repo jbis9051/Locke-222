@@ -39,5 +39,36 @@
 }
 
 .user-popout-menu {
-    background: red;
+    background: #2e3137;
+    border-radius: 7px;
+    min-width: 300px;
+}
+
+.user-popout-menu > div {
+    padding: 20px;
+}
+
+.user-popout-menu--user-info {
+    background: #202225;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.user-popout-menu--user-info__profile-image {
+    height: 100px;
+    width: 100px;
+    margin-bottom: 20px;
+}
+.user-popout-menu--user-info__name {
+    color: white;
+    font-weight: 700;
+}
+.user-popout-menu--user-bio--topic {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: rgba(183, 183, 183, 0.82);
+    margin-bottom: 7px;
 }

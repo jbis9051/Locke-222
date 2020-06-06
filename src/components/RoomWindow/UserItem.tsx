@@ -1,7 +1,6 @@
 import User from '../../models/User';
 import React, { useRef, useState } from 'react';
 import './UserItem.css';
-import ReactTooltip from 'react-tooltip';
 import PopOutMenu from '../PopOutMenu';
 
 export default function UserItem({
@@ -18,6 +17,17 @@ export default function UserItem({
         if (tooltipRef) {
             setVisible(true);
         }
+    }
+
+    const roles = [];
+    if (user.is_moderator) {
+        roles.push('Moderator');
+    }
+    if (user.is_owner) {
+        roles.push('Owner');
+    }
+    if (!user.is_owner && !user.is_moderator) {
+        roles.push('Member');
     }
 
     return (
@@ -40,7 +50,19 @@ export default function UserItem({
                 visible={visible}
             >
                 <div className={'user-popout-menu'}>
-                    <h1>Test</h1>
+                    <div className={'user-popout-menu--user-info'}>
+                        <img
+                            src={user.image_url!}
+                            className={'user-popout-menu--user-info__profile-image'}
+                        />
+                        <span className={'user-popout-menu--user-info__name'}>{user.name}</span>
+                    </div>
+                    <div className={'user-popout-menu--user-bio'}>
+                        <div className={'user-popout-menu--user-bio--topic'}>Role</div>
+                        {roles.map((role, index) => (
+                            <span key={index}>{role}</span>
+                        ))}
+                    </div>
                 </div>
             </PopOutMenu>
         </div>

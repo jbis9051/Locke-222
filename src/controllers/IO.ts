@@ -101,6 +101,7 @@ class IO {
         eval(code);
 
         RoomStore.clearUsers();
+        UserStore.clearStore();
 
         // @ts-ignore
         members
