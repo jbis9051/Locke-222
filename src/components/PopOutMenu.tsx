@@ -1,35 +1,45 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './PopOutMenu.css';
 
-const OFFSET_LEFT = -10;
+const OFFSET_X = 20;
 const BOTTOM_OFFSET = 10;
 
 export default function PopOutMenu({
     children,
     visible,
     element,
+    direction,
+    shouldClose,
 }: {
     children: React.ReactElement;
     visible: boolean;
     element: () => Element;
+    direction: 'left' | 'right';
+    shouldClose?: () => void;
 }) {
     const [styles, setStyles] = useState({});
     const [viewportHeight, setViewportHeight] = useState(document.documentElement.clientHeight);
     const [viewportWidth, setViewportWidth] = useState(document.documentElement.clientWidth);
 
     const popOutMenu = useCallback(
-        (node) => {
+        (popOutEl) => {
             const el = element();
-            if (!node || !el) {
+            if (!popOutEl || !el) {
                 return;
             }
-            const rect = el.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            const popOutElRect = popOutEl.getBoundingClientRect();
             const location: any = {
-                top: rect.top + document.body.scrollTop,
-                left: rect.left + document.body.scrollLeft + OFFSET_LEFT,
+                top: elRect.top + document.body.scrollTop,
             };
-            const height = parseFloat(getComputedStyle(node!, null).height.replace('px', ''));
-            if (location.top + height + BOTTOM_OFFSET > viewportHeight) {
+            if (direction === 'left') {
+                location.left =
+                    elRect.left + document.body.scrollLeft - popOutElRect.width - OFFSET_X;
+            } else {
+                location.right =
+                    elRect.right - document.body.scrollLeft + popOutElRect.width + OFFSET_X;
+            }
+            if (location.top + popOutElRect.height + BOTTOM_OFFSET > viewportHeight) {
                 delete location.top;
                 location.bottom = BOTTOM_OFFSET;
             }
@@ -47,6 +57,17 @@ export default function PopOutMenu({
         window.addEventListener('resize', updateViewportMeasurements);
         return () => window.removeEventListener('resize', updateViewportMeasurements);
     }, []);
+
+    useEffect(() => {
+        if (!shouldClose) {
+            return;
+        }
+        if (visible) {
+            window.addEventListener('click', shouldClose);
+        } else {
+            window.removeEventListener('click', shouldClose);
+        }
+    }, [shouldClose, visible]);
 
     if (!visible) {
         return null;

@@ -9,7 +9,7 @@ export default function RoomInfoPanel() {
         <div className={'room-info'}>
             <StarsList />
             <div className={'room-info--me'}>
-                <UserItem user={CurrentUserStore.user!} />
+                <UserItem popupDirection={'right'} user={CurrentUserStore.user!} />
             </div>
         </div>
     );

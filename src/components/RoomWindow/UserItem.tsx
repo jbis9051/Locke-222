@@ -4,33 +4,25 @@ import './UserItem.css';
 import ReactTooltip from 'react-tooltip';
 import PopOutMenu from '../PopOutMenu';
 
-export default function UserItem({ user }: { user: User }) {
+export default function UserItem({
+    user,
+    popupDirection,
+}: {
+    user: User;
+    popupDirection: 'left' | 'right';
+}) {
     let tooltipRef = useRef(null);
     const [visible, setVisible] = useState(false);
 
     function tooltipOpen() {
         if (tooltipRef) {
             setVisible(true);
-            document.querySelector('body')!.addEventListener('click', tooltipClose);
-        }
-    }
-
-    function tooltipClose() {
-        if (tooltipRef) {
-            setVisible(true);
-            document.querySelector('body')!.removeEventListener('click', tooltipClose);
         }
     }
 
     return (
         <div onClick={(e) => e.stopPropagation()} className={'user-item-wrapper'}>
-            <div
-                ref={tooltipRef}
-                data-tip={''}
-                data-for={user.id.toString()}
-                onClick={tooltipOpen}
-                className={'user-item'}
-            >
+            <div ref={tooltipRef} onClick={tooltipOpen} className={'user-item'}>
                 <img
                     className={'user-item__image'}
                     width={'30px'}
@@ -41,8 +33,15 @@ export default function UserItem({ user }: { user: User }) {
                     <span>{user.name}</span>
                 </span>
             </div>
-            <PopOutMenu element={() => tooltipRef.current!} visible={visible}>
-                <h1>{user.name}</h1>
+            <PopOutMenu
+                shouldClose={() => setVisible(false)}
+                direction={popupDirection}
+                element={() => tooltipRef.current!}
+                visible={visible}
+            >
+                <div className={'user-popout-menu'}>
+                    <h1>Test</h1>
+                </div>
             </PopOutMenu>
         </div>
     );

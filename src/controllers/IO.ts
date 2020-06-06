@@ -53,11 +53,11 @@ class IO {
             this.handleMessage(JSON.parse(event.data));
         });
         ws.addEventListener('error', (event) => {
-            console.error(`WebSocket Errored: ${event.toString()}`);
+            console.error(`WebSocket Closed: ${JSON.stringify(event)}`);
             //this.setUpWS();
         });
         ws.addEventListener('close', (event) => {
-            console.error(`WebSocket Closed: ${event.toString()}`);
+            console.log(`WebSocket Closed: ${JSON.stringify(event)}`);
             //this.setUpWS();
         });
         if (this.ws) {
@@ -86,6 +86,7 @@ class IO {
                 initPresent: (peoples: UserObject[]) => {
                     members = peoples;
                 },
+                update: () => {}, // this maybe important, not sure
             },
         };
 
