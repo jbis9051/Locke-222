@@ -46,8 +46,9 @@ export default function UserItem({
         setVisible(false);
     }
 
+    // @ts-ignore
     return (
-        <div onClick={(e) => e.stopPropagation()} className={'user-item-wrapper'}>
+        <div className={'user-item-wrapper'}>
             <div ref={tooltipRef} onClick={tooltipOpen} className={'user-item'}>
                 <img
                     className={'user-item__image'}
@@ -65,7 +66,7 @@ export default function UserItem({
                 element={() => tooltipRef.current!}
                 visible={visible}
             >
-                <div className={'user-popout-menu'}>
+                <div onClick={(e) => e.stopPropagation()} className={'user-popout-menu'}>
                     <div className={'user-popout-menu--user-info'}>
                         <img
                             src={user.image_url!}

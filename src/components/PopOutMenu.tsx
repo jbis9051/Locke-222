@@ -3,7 +3,6 @@ import './PopOutMenu.css';
 
 const OFFSET_X = 20;
 const BOTTOM_OFFSET = 10;
-let needsToClose: null | { close: () => void; element: Element } = null; // TODO this is really bad
 
 export default function PopOutMenu({
     children,
@@ -64,18 +63,14 @@ export default function PopOutMenu({
             return;
         }
         if (visible) {
-            if (needsToClose?.element !== element()) {
-                needsToClose?.close();
-            }
-            needsToClose = {
-                element: element(),
-                close: shouldClose,
-            };
-            window.addEventListener('click', shouldClose);
+            window.addEventListener('click', (e) => {
+                const ourButton = element();
+                if (e.composedPath().some((el) => el === ourButton)) {
+                    return;
+                }
+                shouldClose();
+            });
         } else {
-            if (needsToClose?.element === element()) {
-                needsToClose = null;
-            }
             window.removeEventListener('click', shouldClose);
         }
     }, [shouldClose, visible]);
