@@ -47,7 +47,7 @@ class Message {
 
     parseContent() {
         this.content = htmlToClassicMarkdown(this.rawContent);
-        const matches = Array.from(this.content.matchAll(/@([^\s]+)/));
+        const matches = Array.from(this.content.matchAll(/@([^\s]+)/g));
         matches.forEach((mention) => {
             const user = RoomStore.getUserByMentionString(mention[1]);
             if (user) {
