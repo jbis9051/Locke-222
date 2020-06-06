@@ -37,7 +37,7 @@ class RoomStore {
         this._users.push(user);
     }
 
-    clearUsers(){
+    clearUsers() {
         this._users = [];
     }
 

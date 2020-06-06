@@ -16,7 +16,7 @@ export default function RoomSelectorPanel() {
                 <RoomItem
                     key={room.id}
                     onClick={() => {
-                        IO.init(room.id)
+                        IO.init(room.id);
                     }}
                     selected={room.id === RoomStore.id}
                     longname={room.name}

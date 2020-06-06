@@ -3,7 +3,13 @@ import RoomStore from '../stores/RoomStore';
 import { UserObject } from '../interfaces/UserObject';
 import User from '../models/User';
 import { parse } from 'node-html-parser';
-import { EventType, MessageEvent, RoomEvent, UserJoinEvent, WebSocketEvent } from '../interfaces/WebSocketEvent';
+import {
+    EventType,
+    MessageEvent,
+    RoomEvent,
+    UserJoinEvent,
+    WebSocketEvent,
+} from '../interfaces/WebSocketEvent';
 import Message from '../models/Message';
 import { RoomInfoResponse, UserInfoResponse } from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
@@ -20,7 +26,7 @@ class IO {
     }
 
     async init(roomId: number, force: boolean = false) {
-        if(!force && roomId === RoomStore.id){
+        if (!force && roomId === RoomStore.id) {
             return;
         }
         RoomStore.id = roomId;
@@ -100,7 +106,7 @@ class IO {
             .map((userObject) => User.fromUserObject(userObject))
             .forEach((user) => RoomStore.addUser(user));
 
-        if(currentUser > 0){
+        if (currentUser > 0) {
             CurrentUserStore.user = await UserStore.getUserById(currentUser);
         }
     }

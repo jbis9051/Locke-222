@@ -6,25 +6,25 @@ import { useObserver } from 'mobx-react';
 
 export default function RoomPeopleList() {
     return useObserver(() => (
-        <div className={"room-people-list"}>
-            <div className={"room-people-list-title"}>Moderators</div>
-            {
-                RoomStore.users.filter(user => user.is_moderator).map(user => (
-                    <UserItem key={user.id} user={user}/>
-                ))
-            }
-            <div className={"room-people-list-title"}>Room Owners</div>
-            {
-                RoomStore.users.filter(user => user.is_owner && !user.is_moderator).map(user => (
-                    <UserItem key={user.id} user={user}/>
-                ))
-            }
-            <div className={"room-people-list-title"}>Members</div>
-            {
-                RoomStore.users.filter(user => !user.is_owner && !user.is_moderator).map(user => (
-                    <UserItem key={user.id} user={user}/>
-                ))
-            }
+        <div className={'room-people-list'}>
+            <div className={'room-people-list-title'}>Moderators</div>
+            {RoomStore.users
+                .filter((user) => user.is_moderator)
+                .map((user) => (
+                    <UserItem key={user.id} user={user} />
+                ))}
+            <div className={'room-people-list-title'}>Room Owners</div>
+            {RoomStore.users
+                .filter((user) => user.is_owner && !user.is_moderator)
+                .map((user) => (
+                    <UserItem key={user.id} user={user} />
+                ))}
+            <div className={'room-people-list-title'}>Members</div>
+            {RoomStore.users
+                .filter((user) => !user.is_owner && !user.is_moderator)
+                .map((user) => (
+                    <UserItem key={user.id} user={user} />
+                ))}
         </div>
     ));
 }

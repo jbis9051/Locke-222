@@ -9,10 +9,10 @@ export default function RoomWindow() {
     return (
         <div className={'room-window'}>
             <RoomTopBar />
-            <div className={"room-content-wrapper"}>
-                <RoomInfoPanel/>
-                <ChatWindow/>
-                <RoomPeopleList/>
+            <div className={'room-content-wrapper'}>
+                <RoomInfoPanel />
+                <ChatWindow />
+                <RoomPeopleList />
             </div>
         </div>
     );

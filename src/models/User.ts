@@ -42,7 +42,8 @@ class User {
         let imageURL = userObject.email_hash;
         if (imageURL.startsWith('!')) {
             imageURL = imageURL.substring(1);
-        } else { // TODO we need to detect somehow if they have an avatar or not
+        } else {
+            // TODO we need to detect somehow if they have an avatar or not
             imageURL = `https://www.gravatar.com/avatar/${imageURL}`; // d=identicon&r=PG
         }
         return new User(

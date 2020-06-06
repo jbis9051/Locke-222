@@ -7,17 +7,17 @@ export default function RoomItem({
     shortname,
     imagesrc,
     onClick,
-    selected
+    selected,
 }: {
     longname: string;
     shortname: string;
-    selected?: boolean
+    selected?: boolean;
     imagesrc?: string;
     onClick?: () => void;
 }) {
     const id = Math.random().toString();
     return (
-        <div onClick={onClick} className={`room-selector--item ${selected ? "selected" : ""}`}>
+        <div onClick={onClick} className={`room-selector--item ${selected ? 'selected' : ''}`}>
             <ReactTooltip backgroundColor={'black'} effect={'solid'} place={'right'} id={id}>
                 <span>{longname}</span>
             </ReactTooltip>
