@@ -1,0 +1,21 @@
+.message-group__container {
+    display: flex;
+    margin: 10px;
+}
+
+.message-group__avatar {
+    margin-right: 5px;
+}
+
+.message-group__text {
+    flex-grow: 1;
+}
+
+.message-group__header {
+    display: flex;
+}
+
+.message-group__timestamp {
+    font-size: small;
+    color: gray;
+}

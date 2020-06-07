@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import User from '../models/User';
 import Message from '../models/Message';
 import UserStore from './UserStore';
@@ -6,6 +6,9 @@ import UserStore from './UserStore';
 class RoomStore {
     get users(): User[] {
         return this._users;
+    }
+    get messages(): Message[] {
+        return this._messages;
     }
     get description(): string {
         return this._description;
@@ -25,12 +28,28 @@ class RoomStore {
     get id(): number {
         return this._id;
     }
+    /*
+        Given: [ { userId: 1... }, { userId: 2... }, { userId: 2... }, { userId: 1... } ]
+        Return: [ [ { userId: 1... } ], [ { userId: 2... }, { userId: 2... } ], [ { userID: 1... } ] ]
+     */
+    @computed get groupedMessages(): Message[][] {
+        const groupArray: Message[][] = [];
+        for (const message of this._messages) {
+            const lastItem = groupArray[groupArray.length - 1];
+            if (message.user.id === lastItem?.[0]?.user.id) {
+                lastItem.push(message);
+            } else {
+                groupArray.push([message]);
+            }
+        }
+        return groupArray;
+    }
 
     @observable private _id: number = 0;
     @observable private _name: string = '';
     @observable private _description: string = '';
     @observable private _users: User[] = []; // list of users currently in the room
-    @observable private messages: Message[] = [];
+    @observable private _messages: Message[] = [];
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store
@@ -46,7 +65,7 @@ class RoomStore {
     }
 
     addMessage(message: Message) {
-        this.messages.push(message);
+        this._messages.push(message);
     }
 
     getUserById(userId: number) {

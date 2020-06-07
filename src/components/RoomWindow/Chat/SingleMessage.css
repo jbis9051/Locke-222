@@ -1,0 +1,14 @@
+.single-message__container {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.single-message__container:hover {
+    background-color: #2e3137;
+}
+
+.single-message__timestamp {
+    font-size: small;
+    color: gray;
+}

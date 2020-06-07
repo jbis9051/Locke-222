@@ -1,14 +1,11 @@
 .user-item-wrapper {
     padding: 0 5px;
-    width: 100%;
 }
 
 .user-item {
-    width: 100%;
     overflow: hidden;
     display: flex;
     align-items: center;
-    padding: 10px;
     border-radius: 7px;
     cursor: pointer;
     user-select: none;
@@ -20,7 +17,7 @@
 }
 
 .user-item__image {
-    margin-right: 10px;
+    border-radius: 50%;
 }
 
 .user-item--name {
@@ -32,7 +29,6 @@
     font-weight: 600;
 }
 .user-item--name span {
-    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: pre;

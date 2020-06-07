@@ -11,7 +11,12 @@ import {
     WebSocketEvent,
 } from '../interfaces/WebSocketEvent';
 import Message from '../models/Message';
-import { RoomInfoResponse, ThumbsResponse, UserInfoResponse } from '../interfaces/APIResponses';
+import {
+    EventsResponse,
+    RoomInfoResponse,
+    ThumbsResponse,
+    UserInfoResponse,
+} from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
 import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
@@ -33,6 +38,7 @@ class IO {
         await this.setUpWS();
         await this.setUpRoomInfo();
         await this.setUpRoomMembers();
+        this.getPreviousMessages();
     }
 
     async setUpWS() {
@@ -151,11 +157,8 @@ class IO {
 
         const eventFunctions = {
             [EventType.NEW_MESSAGE]: (event: MessageEvent) => {
-                const user = RoomStore.getUserById(event.user_id);
-                if (!user) {
-                    return;
-                }
-                RoomStore.addMessage(new Message(event.message_id, user, event.content));
+                const message = Message.fromEvent(event);
+                if (message) RoomStore.addMessage(message);
             },
             [EventType.USER_JOIN]: async (event: UserJoinEvent) => {
                 const user = await UserStore.getUserById(event.user_id);
@@ -186,6 +189,26 @@ class IO {
             return true;
         }
         throw data;
+    }
+
+    async getPreviousMessages(): Promise<void> {
+        const response = await fetch(`/chats/${RoomStore.id}/events`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formEncoder({
+                since: 0,
+                mode: 'Messages',
+                msgCount: 100,
+                fkey: this.fkey,
+            }),
+        });
+        const data = (await response.json()) as EventsResponse;
+        for (const event of data.events) {
+            const message = Message.fromEvent(event);
+            if (message) RoomStore.addMessage(message);
+        }
     }
 
     async getUserInfo(userId: number): Promise<UserObject> {

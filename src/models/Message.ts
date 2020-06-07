@@ -1,7 +1,9 @@
 import { observable } from 'mobx';
+import fromUnixTime from 'date-fns/fromUnixTime';
 import User from './User';
 import RoomStore from '../stores/RoomStore';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
+import { MessageEvent } from '../interfaces/WebSocketEvent';
 
 interface Mention {
     username: string;
@@ -9,11 +11,12 @@ interface Mention {
 }
 
 class Message {
-    @observable private id: number;
-    @observable private user: User;
-    @observable private content: string = ''; // parsed content, strip SO tags and add our own
-    @observable private rawContent: string; // raw content
-    @observable private dateReceived: Date;
+    readonly id: number;
+    readonly user: User;
+    @observable private _content: string = ''; // parsed content, strip SO tags and add our own
+    private rawContent: string; // raw content
+    readonly dateCreated: Date;
+    @observable private _dateModified: Date;
     @observable private mentions: Mention[] = [];
     @observable private parentId: number | null = null;
     @observable private showParent: boolean = false;
@@ -26,11 +29,27 @@ class Message {
         return this.mentions.length > 0;
     }
 
-    constructor(id: number, user: User, content: string, parentId?: number, showParent?: boolean) {
+    get content() {
+        return this._content;
+    }
+
+    get dateModified() {
+        return this._dateModified;
+    }
+
+    constructor(
+        id: number,
+        user: User,
+        content: string,
+        dateCreated: Date,
+        parentId?: number,
+        showParent?: boolean
+    ) {
         this.id = id;
         this.user = user;
         this.rawContent = content;
-        this.dateReceived = new Date();
+        this.dateCreated = dateCreated;
+        this._dateModified = this.dateCreated;
         if (parentId) {
             this.parentId = parentId;
         }
@@ -41,13 +60,14 @@ class Message {
     }
 
     edit(updatedContent: string) {
+        this._dateModified = new Date();
         this.rawContent = updatedContent;
         this.parseContent();
     }
 
-    parseContent() {
-        this.content = htmlToClassicMarkdown(this.rawContent);
-        const matches = Array.from(this.content.matchAll(/@([^\s]+)/g));
+    private parseContent() {
+        this._content = htmlToClassicMarkdown(this.rawContent);
+        const matches = Array.from(this._content.matchAll(/@([^\s]+)/g));
         matches.forEach((mention) => {
             const user = RoomStore.getUserByMentionString(mention[1]);
             if (user) {
@@ -56,6 +76,12 @@ class Message {
                 this.mentions.push({ username: mention[1], id: null });
             }
         });
+    }
+
+    static fromEvent(event: MessageEvent): Message | null {
+        const user = RoomStore.getUserById(event.user_id);
+        if (!user) return null;
+        return new Message(event.message_id, user, event.content, fromUnixTime(event.time_stamp));
     }
 }
 export default Message;

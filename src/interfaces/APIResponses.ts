@@ -1,4 +1,5 @@
 import { UserObject } from './UserObject';
+import { MessageEvent } from './WebSocketEvent';
 
 export interface RoomInfoResponse {
     id: number;
@@ -42,4 +43,11 @@ export interface ThumbsResponse {
     invite_targets: null;
     host: string;
     may_pairoff: boolean;
+}
+
+export interface EventsResponse {
+    events: MessageEvent[];
+    ms: number;
+    sync: number;
+    time: number;
 }

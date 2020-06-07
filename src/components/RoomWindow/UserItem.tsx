@@ -7,9 +7,13 @@ import { ThumbsResponse } from '../../interfaces/APIResponses';
 
 export default function UserItem({
     user,
+    displayName = true,
+    displayAvatar = true,
     popupDirection,
 }: {
     user: User;
+    displayName?: boolean;
+    displayAvatar?: boolean;
     popupDirection: 'left' | 'right';
 }) {
     const [visible, setVisible] = useState(false);
@@ -43,15 +47,20 @@ export default function UserItem({
     return (
         <div className={'user-item-wrapper'}>
             <div ref={userButton as any} onClick={tooltipOpen} className={'user-item'}>
-                <img
-                    className={'user-item__image'}
-                    width={'30px'}
-                    height={'30px'}
-                    src={user.image_url + '?s=42'}
-                />
-                <span className={'user-item--name'}>
-                    <span>{user.name}</span>
-                </span>
+                {displayAvatar && (
+                    <img
+                        className={'user-item__image'}
+                        width={'30px'}
+                        height={'30px'}
+                        style={displayName ? { marginRight: '10px' } : undefined}
+                        src={user.image_url + '?s=42'}
+                    />
+                )}
+                {displayName && (
+                    <span className={'user-item--name'}>
+                        <span>{user.name}</span>
+                    </span>
+                )}
             </div>
             <PopOutMenu
                 shouldClose={shouldClose.current}
