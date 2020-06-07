@@ -12,14 +12,20 @@ export default function UserItem({
     user: User;
     popupDirection: 'left' | 'right';
 }) {
-    let tooltipRef = useRef(null);
     const [visible, setVisible] = useState(false);
     const [userData, setUserData] = useState<ThumbsResponse | null>(null);
+    const userButton = useRef<Element>();
+
+    const shouldClose = useRef(() => {
+        setUserData(null);
+        setVisible(false);
+    });
 
     function tooltipOpen() {
-        if (tooltipRef) {
+        IO.getUserThumb(user.id).then((thumb) => {
+            setUserData(thumb);
             setVisible(true);
-        }
+        });
     }
 
     const roles = [];
@@ -33,23 +39,10 @@ export default function UserItem({
         roles.push('Member');
     }
 
-    useEffect(() => {
-        if (visible) {
-            IO.getUserThumb(user.id).then((thumb) => {
-                setUserData(thumb);
-            });
-        }
-    }, [visible]);
-
-    function shouldClose() {
-        setUserData(null);
-        setVisible(false);
-    }
-
     // @ts-ignore
     return (
         <div className={'user-item-wrapper'}>
-            <div ref={tooltipRef} onClick={tooltipOpen} className={'user-item'}>
+            <div ref={userButton as any} onClick={tooltipOpen} className={'user-item'}>
                 <img
                     className={'user-item__image'}
                     width={'30px'}
@@ -61,9 +54,9 @@ export default function UserItem({
                 </span>
             </div>
             <PopOutMenu
-                shouldClose={shouldClose}
+                shouldClose={shouldClose.current}
                 direction={popupDirection}
-                element={() => tooltipRef.current!}
+                elRect={userButton.current?.getBoundingClientRect()}
                 visible={visible}
             >
                 <div onClick={(e) => e.stopPropagation()} className={'user-popout-menu'}>
@@ -73,6 +66,14 @@ export default function UserItem({
                             className={'user-popout-menu--user-info__profile-image'}
                         />
                         <span className={'user-popout-menu--user-info__name'}>{user.name}</span>
+                        <div className={'user-popout-menu--user-info--links'}>
+                            <a target={'_blank'} href={`/users/${user.id}`}>
+                                Chat Profile
+                            </a>
+                            <a target={'_blank'} href={userData?.profileUrl}>
+                                Site Profile
+                            </a>
+                        </div>
                     </div>
                     <div className={'user-popout-menu--user-bio'}>
                         <div className={'user-popout-menu--user-bio--topic'}>Role</div>

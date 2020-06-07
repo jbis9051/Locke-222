@@ -3,77 +3,65 @@ import './PopOutMenu.css';
 
 const OFFSET_X = 20;
 const BOTTOM_OFFSET = 10;
+let func: any = null;
 
 export default function PopOutMenu({
     children,
     visible,
-    element,
+    elRect,
     direction,
     shouldClose,
 }: {
     children: React.ReactElement;
     visible: boolean;
-    element: () => Element;
+    elRect: DOMRect | undefined;
     direction: 'left' | 'right';
     shouldClose?: () => void;
 }) {
     const [styles, setStyles] = useState({});
-    const [viewportHeight, setViewportHeight] = useState(document.documentElement.clientHeight);
-    const [viewportWidth, setViewportWidth] = useState(document.documentElement.clientWidth);
 
     const popOutMenu = useCallback(
         (popOutEl) => {
-            const el = element();
-            if (!popOutEl || !el) {
+            if (!popOutEl || !elRect) {
                 return;
             }
-            const elRect = el.getBoundingClientRect();
             const popOutElRect = popOutEl.getBoundingClientRect();
-            const location: any = {
+            const style: any = {
                 top: elRect.top + document.body.scrollTop,
             };
             if (direction === 'left') {
-                location.left =
-                    elRect.left + document.body.scrollLeft - popOutElRect.width - OFFSET_X;
+                style.left = elRect.left + document.body.scrollLeft - popOutElRect.width - OFFSET_X;
             } else {
-                location.right =
-                    elRect.right - document.body.scrollLeft + popOutElRect.width + OFFSET_X;
+                style.left = elRect.right - document.body.scrollLeft + OFFSET_X;
+                // elRect.right + popOutElRect.width - OFFSET_X;
             }
-            if (location.top + popOutElRect.height + BOTTOM_OFFSET > viewportHeight) {
-                delete location.top;
-                location.bottom = BOTTOM_OFFSET;
+            if (
+                style.top + popOutElRect.height + BOTTOM_OFFSET >
+                document.documentElement.clientHeight
+            ) {
+                delete style.top;
+                style.bottom = BOTTOM_OFFSET;
             }
-            setStyles(location);
+            style.width = popOutElRect.width; // we don't want it moving around
+            setStyles(style);
         },
-        [viewportHeight, viewportWidth, children]
+        [elRect, children]
     );
-
-    useEffect(() => {
-        function updateViewportMeasurements() {
-            setViewportHeight(document.documentElement.clientHeight);
-            setViewportWidth(document.documentElement.clientWidth);
-        }
-
-        window.addEventListener('resize', updateViewportMeasurements);
-        return () => window.removeEventListener('resize', updateViewportMeasurements);
-    }, []);
 
     useEffect(() => {
         if (!shouldClose) {
             return;
         }
         if (visible) {
-            window.addEventListener('click', (e) => {
-                const ourButton = element();
-                if (e.composedPath().some((el) => el === ourButton)) {
-                    return;
-                }
-                shouldClose();
-            });
+            setTimeout(() => {
+                window.addEventListener('click', shouldClose);
+            }, 0);
+            window.addEventListener('resize', shouldClose);
         } else {
             window.removeEventListener('click', shouldClose);
+            window.removeEventListener('resize', shouldClose);
         }
-    }, [shouldClose, visible]);
+    }, [visible]);
 
     if (!visible) {
         return null;
