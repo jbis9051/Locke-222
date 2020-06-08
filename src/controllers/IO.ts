@@ -4,6 +4,7 @@ import { UserObject } from '../interfaces/UserObject';
 import User from '../models/User';
 import { parse } from 'node-html-parser';
 import {
+    Event,
     EventType,
     MessageEvent,
     RoomEvent,
@@ -36,10 +37,12 @@ class IO {
         }
         RoomStore.id = roomId;
         await this.setUpWS();
-        await this.setUpRoomInfo();
-        await this.setUpRoomMembers();
-        await this.setUpPreviousMessages();
+        await Promise.all([this.setUpRoomInfo(), this.setUpRoomMembers()]);
+
+        await Promise.all([this.setUpPreviousMessages(), this.setUpRecentStars()]);
     }
+
+    // ---- SETUP --- //
 
     async setUpWS() {
         const data = await fetch('/ws-auth', {
@@ -145,6 +148,45 @@ class IO {
         CurrentUserStore.setFavoriteRooms(rooms);
     }
 
+    async setUpPreviousMessages(): Promise<void> {
+        RoomStore.clearMessages();
+        const response = await fetch(`/chats/${RoomStore.id}/events`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formEncoder({
+                since: 0,
+                mode: 'Messages',
+                msgCount: 100,
+                fkey: this.fkey,
+            }),
+        });
+        const messages: Message[] = [];
+        const data = (await response.json()) as EventsResponse;
+        for (const event of data.events) {
+            const message = await Message.fromEvent(event);
+            if (message) messages.push(message);
+        }
+        RoomStore.addMessage(...messages);
+    }
+
+    async setUpRecentStars() {
+        RoomStore.clearStars();
+        const html = await fetch(`/chats/stars/${RoomStore.id}`).then((resp) => resp.text());
+        const doc = parse(html);
+
+        const stars: (Message | null)[] = await Promise.all(
+            doc.querySelectorAll('li').map((li) => {
+                return this.getMessage(parseInt(li.id.match(/[0-9]+/)![0]));
+            })
+        );
+
+        RoomStore.addStar(...(stars.filter((star) => !!star) as any));
+    }
+
+    // ---- EVENT HANDLERS --- //
+
     async handleMessage(event: WebSocketEvent) {
         const roomKey = `r${RoomStore.id}`;
         if (!event.hasOwnProperty(roomKey)) {
@@ -169,12 +211,15 @@ class IO {
             },
         };
 
-        events.forEach((roomEvent) => {
-            if (eventFunctions.hasOwnProperty(roomEvent.event_type)) {
-                eventFunctions[roomEvent.event_type](roomEvent as any);
+        events.forEach((anEvent: Event) => {
+            if (eventFunctions.hasOwnProperty(anEvent.event_type)) {
+                // @ts-ignore
+                eventFunctions[anEvent.event_type](anEvent);
             }
         });
     }
+
+    // ---- OUT --- //
 
     async send(content: string) {
         const resp = await fetch(`/chats/${RoomStore.id}/messages/new`, {
@@ -191,28 +236,21 @@ class IO {
         throw data;
     }
 
-    async setUpPreviousMessages(): Promise<void> {
-        RoomStore.clearMessages();
-        const response = await fetch(`/chats/${RoomStore.id}/events`, {
+    async starMessageToggle(messageId: number) {
+        const resp = await fetch(`/messages/${messageId}/star`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
             body: formEncoder({
-                since: 0,
-                mode: 'Messages',
-                msgCount: 100,
                 fkey: this.fkey,
             }),
         });
-        const messages: Message[] = [];
-        const data = (await response.json()) as EventsResponse;
-        for (const event of data.events) {
-            const message = await Message.fromEvent(event);
-            if (message) messages.push(message);
+        const data = await resp.text();
+        if (resp.status === 200) {
+            return true;
         }
-        RoomStore.addMessage(...messages);
+        throw data;
     }
+
+    // ---- IN --- //
 
     async getUserInfo(userId: number): Promise<UserObject> {
         const data: UserInfoResponse = await fetch('/user/info', {
@@ -231,6 +269,35 @@ class IO {
 
     async getUserThumb(userId: number): Promise<ThumbsResponse> {
         return await fetch(`/users/thumbs/${userId}`).then((resp) => resp.json());
+    }
+
+    async getMessage(messageId: number): Promise<Message | null> {
+        const data: EventsResponse = await fetch(`/chats/${RoomStore.id}/events`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formEncoder({
+                before: messageId + 1, // we add one to get the message event right before it which should be the messageId
+                mode: 'Messages',
+                msgCount: 1,
+                fkey: this.fkey,
+            }),
+        }).then((resp) => resp.json());
+
+        const messageEvent = data.events[0];
+
+        if (!messageEvent) {
+            return null;
+        }
+
+        const message = await Message.fromEvent(messageEvent);
+
+        if (message.id !== messageId) {
+            return null;
+        }
+
+        return message;
     }
 }
 

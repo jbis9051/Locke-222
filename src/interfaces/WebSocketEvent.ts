@@ -31,22 +31,28 @@ export interface TikTokEvent {
     d: number;
 }
 
-export interface MessageEvent {
-    event_type: EventType.NEW_MESSAGE;
+export interface Event {
+    event_type: EventType;
     time_stamp: number;
-    content: string;
     id: number;
+}
+
+export interface MessageEvent extends Event {
+    event_type: EventType.NEW_MESSAGE;
+    content: string;
     user_id: number;
     user_name: string;
     room_id: number;
     room_name: string;
     message_id: number;
+    parent_id?: number;
+    show_parent: true;
+    message_stars?: number;
+    message_stared?: true; // if the current user has stared it, only appears if true
 }
 
-export interface UserJoinEvent {
+export interface UserJoinEvent extends Event {
     event_type: EventType.USER_JOIN;
-    time_stamp: number;
-    id: number;
     user_id: number;
     target_user_id: number;
     user_name: string;
@@ -54,12 +60,24 @@ export interface UserJoinEvent {
     room_name: string;
 }
 
+export interface StarEvent extends Event {
+    event_type: EventType.STAR_MESSAGE;
+    content: string;
+    user_id: number;
+    user_name: string;
+    room_id: number;
+    room_name: string;
+    message_id: number;
+    message_stars: number;
+    message_started: boolean; // if the current user has stared it
+}
+
 export interface WebSocketEvent {
     [key: string]: RoomEvent | TikTokEvent;
 }
 
 export interface RoomEvent {
-    e: Array<MessageEvent | UserJoinEvent>;
+    e: Array<Event>;
     t: number;
     d: number;
 }

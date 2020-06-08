@@ -4,6 +4,9 @@ import Message from '../models/Message';
 import UserStore from './UserStore';
 
 class RoomStore {
+    get stars(): Message[] {
+        return this._stars;
+    }
     get users(): User[] {
         return this._users;
     }
@@ -50,6 +53,7 @@ class RoomStore {
     @observable private _description: string = '';
     @observable private _users: User[] = []; // list of users currently in the room
     @observable private _messages: Message[] = [];
+    @observable private _stars: Message[] = [];
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store
@@ -59,8 +63,13 @@ class RoomStore {
     clearUsers() {
         this._users = [];
     }
+
     clearMessages() {
         this._messages = [];
+    }
+
+    clearStars() {
+        this._stars = [];
     }
 
     removeUser(userId: number) {
@@ -69,6 +78,10 @@ class RoomStore {
 
     addMessage(...messages: Message[]) {
         this._messages.push(...messages);
+    }
+
+    addStar(...messages: Message[]) {
+        this._stars.push(...messages);
     }
 
     getUserById(userId: number) {

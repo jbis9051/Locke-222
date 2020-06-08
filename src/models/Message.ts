@@ -14,13 +14,15 @@ interface Mention {
 class Message {
     readonly id: number;
     readonly user: User;
-    @observable private _content: string = ''; // parsed content, strip SO tags and add our own
+    @observable private _content: string = ''; // parsed content
     private rawContent: string; // raw content
     readonly dateCreated: Date;
     @observable private _dateModified: Date;
     @observable private mentions: Mention[] = [];
-    @observable private parentId: number | null = null;
-    @observable private showParent: boolean = false;
+    @observable private parentId: number | null = null; // is a direct reply?
+    @observable private showParent: boolean = false; // is a reply?
+    @observable private isStaredByMe: boolean = false;
+    @observable private stars: number = 0;
 
     get isHardReply() {
         return this.showParent;
@@ -43,6 +45,8 @@ class Message {
         user: User,
         content: string,
         dateCreated: Date,
+        isStaredByMe: boolean,
+        stars: number,
         parentId?: number,
         showParent?: boolean
     ) {
@@ -81,7 +85,17 @@ class Message {
 
     static async fromEvent(event: MessageEvent): Promise<Message> {
         const user = await UserStore.getUserById(event.user_id);
-        return new Message(event.message_id, user, event.content, fromUnixTime(event.time_stamp));
+        return new Message(
+            event.message_id,
+            user,
+            event.content,
+            fromUnixTime(event.time_stamp),
+            !!event.message_stared,
+            event.message_stars || 0,
+            event.parent_id,
+            event.show_parent
+        );
     }
 }
+
 export default Message;
