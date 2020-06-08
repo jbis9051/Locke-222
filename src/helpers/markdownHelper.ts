@@ -17,6 +17,9 @@ export function htmlToClassicMarkdown(html: string) {
                 case 'b': {
                     return `**${parseNodeRoot(node)}**`;
                 }
+                case 'code': {
+                    return `\`${node.innerHTML}\``;
+                }
                 case 'i': {
                     return `*${parseNodeRoot(node)}*`;
                 }

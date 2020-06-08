@@ -38,7 +38,7 @@ class IO {
         await this.setUpWS();
         await this.setUpRoomInfo();
         await this.setUpRoomMembers();
-        this.getPreviousMessages();
+        await this.setUpPreviousMessages();
     }
 
     async setUpWS() {
@@ -156,8 +156,8 @@ class IO {
         const events = (event[roomKey] as RoomEvent).e;
 
         const eventFunctions = {
-            [EventType.NEW_MESSAGE]: (event: MessageEvent) => {
-                const message = Message.fromEvent(event);
+            [EventType.NEW_MESSAGE]: async (event: MessageEvent) => {
+                const message = await Message.fromEvent(event);
                 if (message) RoomStore.addMessage(message);
             },
             [EventType.USER_JOIN]: async (event: UserJoinEvent) => {
@@ -191,7 +191,8 @@ class IO {
         throw data;
     }
 
-    async getPreviousMessages(): Promise<void> {
+    async setUpPreviousMessages(): Promise<void> {
+        RoomStore.clearMessages();
         const response = await fetch(`/chats/${RoomStore.id}/events`, {
             method: 'POST',
             headers: {
@@ -204,16 +205,21 @@ class IO {
                 fkey: this.fkey,
             }),
         });
+        const messages: Message[] = [];
         const data = (await response.json()) as EventsResponse;
         for (const event of data.events) {
-            const message = Message.fromEvent(event);
-            if (message) RoomStore.addMessage(message);
+            const message = await Message.fromEvent(event);
+            if (message) messages.push(message);
         }
+        RoomStore.addMessage(...messages);
     }
 
     async getUserInfo(userId: number): Promise<UserObject> {
         const data: UserInfoResponse = await fetch('/user/info', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: formEncoder({
                 ids: userId,
                 roomId: RoomStore.id,

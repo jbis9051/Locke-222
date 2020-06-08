@@ -4,6 +4,7 @@ import User from './User';
 import RoomStore from '../stores/RoomStore';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 import { MessageEvent } from '../interfaces/WebSocketEvent';
+import UserStore from '../stores/UserStore';
 
 interface Mention {
     username: string;
@@ -78,9 +79,8 @@ class Message {
         });
     }
 
-    static fromEvent(event: MessageEvent): Message | null {
-        const user = RoomStore.getUserById(event.user_id);
-        if (!user) return null;
+    static async fromEvent(event: MessageEvent): Promise<Message> {
+        const user = await UserStore.getUserById(event.user_id);
         return new Message(event.message_id, user, event.content, fromUnixTime(event.time_stamp));
     }
 }

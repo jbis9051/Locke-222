@@ -59,13 +59,16 @@ class RoomStore {
     clearUsers() {
         this._users = [];
     }
+    clearMessages() {
+        this._messages = [];
+    }
 
     removeUser(userId: number) {
         this._users = this._users.filter((user) => user.id !== userId);
     }
 
-    addMessage(message: Message) {
-        this._messages.push(message);
+    addMessage(...messages: Message[]) {
+        this._messages.push(...messages);
     }
 
     getUserById(userId: number) {
