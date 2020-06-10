@@ -10,7 +10,7 @@ export default function RoomItem({
     selected,
 }: {
     longname: string;
-    shortname: string;
+    shortname: string | React.ReactElement;
     selected?: boolean;
     imagesrc?: string;
     onClick?: () => void;

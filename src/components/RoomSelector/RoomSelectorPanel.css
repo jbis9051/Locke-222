@@ -14,3 +14,16 @@
     background: #333639;
     border-radius: 7px;
 }
+
+.room-selector-refresh.loading {
+    animation: refreshSpin 1s infinite cubic-bezier(0.45, 0.18, 0.07, 1);
+}
+
+@keyframes refreshSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

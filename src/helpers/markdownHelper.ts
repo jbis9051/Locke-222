@@ -32,8 +32,11 @@ export function htmlToClassicMarkdown(html: string) {
                 case 'pre': {
                     return '```\n' + decode(node.rawText.replace(/\r\n/g, '\n')) + '\n```';
                 }
+                case 'span': {
+                    return '//TODO'; // TODO
+                }
                 default: {
-                    throw 'Parse error';
+                    throw `Parse error: Unknown tag: ${node.tagName}`;
                 }
             }
         }

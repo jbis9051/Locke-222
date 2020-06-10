@@ -1,9 +1,19 @@
 .main-app-wrapper {
     height: 100%;
-    background: red;
 }
 
 .app-container {
     display: flex;
     height: 100%;
+}
+
+.loader {
+    background: #333639;
+    padding: 80px 100px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 7px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 }

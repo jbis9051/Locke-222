@@ -9,7 +9,7 @@ function App() {
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-        IO.init(parseInt(window.location.href.match(/\/rooms\/([0-9]+)\//)![1])).then(() =>
+        IO.changeRoom(parseInt(window.location.href.match(/\/rooms\/([0-9]+)\//)![1])).then(() =>
             setIsReady(true)
         );
     }, []);

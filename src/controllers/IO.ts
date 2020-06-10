@@ -21,6 +21,8 @@ import {
 import UserStore from '../stores/UserStore';
 import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
+import UIStore from '../stores/UIStore';
+import { MainWindowState } from '../interfaces/UIStates';
 
 class IO {
     private fkey: string;
@@ -28,10 +30,10 @@ class IO {
 
     constructor(fkey: string) {
         this.fkey = fkey;
-        void this.setUpFavoriteRooms();
+        this.refreshFavoriteRooms();
     }
 
-    async init(roomId: number, force: boolean = false) {
+    async changeRoom(roomId: number, force: boolean = false) {
         if (!force && roomId === RoomStore.id) {
             return;
         }
@@ -130,7 +132,7 @@ class IO {
         RoomStore.description = data.description;
     }
 
-    async setUpFavoriteRooms() {
+    async refreshFavoriteRooms() {
         const html = await fetch(`/?tab=favorite&sort=active`).then((resp) => resp.text());
         const doc = parse(html);
 
