@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import RoomDropDown from './RoomDropDown';
 import { parseMarkdown } from '../../../helpers/markdownHelper';
+import UIStore from '../../../stores/UIStore';
 
 export default function RoomTopBar() {
     const [roomMenuOpen, setRoomMenuOpen] = useState(false);
@@ -22,7 +23,10 @@ export default function RoomTopBar() {
                 </span>
                 {roomMenuOpen ? <RoomDropDown /> : null}
             </div>
-            <div className={'room-top-bar--description-wrapper'}>
+            <div
+                onClick={() => (UIStore.descriptionModal = true)}
+                className={'room-top-bar--description-wrapper'}
+            >
                 {parseMarkdown(RoomStore.description)}
             </div>
         </div>
