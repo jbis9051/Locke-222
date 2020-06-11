@@ -15,6 +15,9 @@
     padding: 10px;
     position: relative;
 }
+.room-top-bar--name-wrapper:hover {
+    background: #33343a;
+}
 
 .room-top-bar--name-wrapper__name {
     flex: 1;

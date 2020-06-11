@@ -21,6 +21,6 @@
     padding: 10px;
 }
 
-.room-people-list--item:hover {
+.room-people-list > *:hover {
     background: #363940;
 }

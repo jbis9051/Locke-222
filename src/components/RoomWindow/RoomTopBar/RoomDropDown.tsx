@@ -3,7 +3,7 @@ import './RoomDropDown.css';
 
 export default function RoomDropDown() {
     return (
-        <div className={'room-menu'}>
+        <div onClick={(e) => e.stopPropagation()} className={'room-menu'}>
             <span>It's me, Mario!</span>
         </div>
     );

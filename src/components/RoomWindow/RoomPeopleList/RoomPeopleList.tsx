@@ -11,11 +11,7 @@ export default function RoomPeopleList() {
         const members: React.ReactElement[] = [];
 
         RoomStore.users.forEach((user) => {
-            const component = (
-                <div className={'room-people-list--item'}>
-                    <UserItem popupDirection={'left'} key={user.id} user={user} />
-                </div>
-            );
+            const component = <UserItem popupDirection={'left'} user={user} key={user.id} />;
             if (user.is_moderator) {
                 moderators.push(component);
                 return;

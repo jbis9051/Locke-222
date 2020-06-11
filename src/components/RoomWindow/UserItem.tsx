@@ -45,8 +45,8 @@ export default function UserItem({
 
     // @ts-ignore
     return (
-        <div className={'user-item-wrapper'}>
-            <div ref={userButton as any} onClick={tooltipOpen} className={'user-item'}>
+        <div ref={userButton as any} onClick={tooltipOpen} className={'user-item-wrapper'}>
+            <div className={'user-item'}>
                 {displayAvatar && (
                     <img
                         className={'user-item__image'}

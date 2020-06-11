@@ -15,7 +15,7 @@ export default function PopOutMenu({
     children: React.ReactElement;
     visible: boolean;
     elRect: DOMRect | undefined;
-    direction: 'left' | 'right';
+    direction: 'left' | 'right' | 'bottom';
     shouldClose?: () => void;
 }) {
     const [styles, setStyles] = useState({});
@@ -28,10 +28,14 @@ export default function PopOutMenu({
             const popOutElRect = popOutEl.getBoundingClientRect();
             const style: any = {
                 top: elRect.top + document.body.scrollTop,
+                left: elRect.left + OFFSET_X + document.body.scrollLeft,
             };
+            if (direction === 'bottom') {
+                style.top += elRect.height + BOTTOM_OFFSET;
+            }
             if (direction === 'left') {
                 style.left = elRect.left + document.body.scrollLeft - popOutElRect.width - OFFSET_X;
-            } else {
+            } else if (direction === 'right') {
                 style.left = elRect.right - document.body.scrollLeft + OFFSET_X;
                 // elRect.right + popOutElRect.width - OFFSET_X;
             }
