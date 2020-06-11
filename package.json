@@ -26,7 +26,6 @@
         "case-sensitive-paths-webpack-plugin": "2.3.0",
         "css-loader": "3.4.2",
         "date-fns": "^2.14.0",
-        "decode-html": "^2.0.0",
         "dotenv": "8.2.0",
         "dotenv-expand": "5.1.0",
         "eslint": "^6.6.0",
@@ -39,6 +38,7 @@
         "eslint-plugin-react-hooks": "^1.6.1",
         "file-loader": "4.3.0",
         "fs-extra": "^8.1.0",
+        "he": "^1.2.0",
         "html-webpack-plugin": "4.0.0-beta.11",
         "identity-obj-proxy": "3.0.0",
         "jest": "24.9.0",
@@ -156,6 +156,7 @@
         }
     },
     "devDependencies": {
+        "@types/he": "^1.1.1",
         "copy-webpack-plugin": "^6.0.2",
         "husky": "^4.2.5",
         "prettier": "^2.0.5",

@@ -1,12 +1,16 @@
 import { HTMLElement, Node, parse, TextNode } from 'node-html-parser';
-import decode from 'decode-html';
+import he from 'he';
+
+const decode = (text: string) => {
+    return he.decode(text).replace(/&#39;/g, "'");
+};
 
 export function htmlToClassicMarkdown(html: string) {
     const document = parse(html, { pre: true });
 
     function parseNode(node: Node): string {
         if (node instanceof TextNode) {
-            return node.text;
+            return decode(node.text);
         }
         if (node instanceof HTMLElement) {
             switch (node.tagName) {
@@ -18,7 +22,7 @@ export function htmlToClassicMarkdown(html: string) {
                     return `**${parseNodeRoot(node)}**`;
                 }
                 case 'code': {
-                    return `\`${node.innerHTML}\``;
+                    return `\`${decode(node.innerHTML)}\``;
                 }
                 case 'i': {
                     return `*${parseNodeRoot(node)}*`;
@@ -33,6 +37,10 @@ export function htmlToClassicMarkdown(html: string) {
                     return '```\n' + decode(node.rawText.replace(/\r\n/g, '\n')) + '\n```';
                 }
                 case 'span': {
+                    if (node.classNames.includes('ob-post-tag')) {
+                        return `<kbd>${parseNodeRoot(node)}</kbd>`;
+                    }
+                    debugger;
                     return '//TODO'; // TODO
                 }
                 default: {
