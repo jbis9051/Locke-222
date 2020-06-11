@@ -11,6 +11,7 @@
     width: 60%;
     margin: 5px;
     height: 3px;
+    min-height: 3px;
     background: #333639;
     border-radius: 7px;
 }

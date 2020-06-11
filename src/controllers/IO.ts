@@ -40,7 +40,7 @@ class IO {
         RoomStore.id = roomId;
         await this.setUpWS();
         await Promise.all([this.setUpRoomInfo(), this.setUpRoomMembers()]);
-
+        CurrentUserStore.addToRecent({ id: RoomStore.id, name: RoomStore.name });
         await Promise.all([this.setUpPreviousMessages(), this.setUpRecentStars()]);
     }
 
