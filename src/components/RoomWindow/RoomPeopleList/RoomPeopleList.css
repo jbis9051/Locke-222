@@ -17,10 +17,10 @@
     margin-top: 0;
 }
 
-.room-people-list > * {
+.room-people-list > .user-item-wrapper {
     padding: 10px;
 }
 
-.room-people-list > *:hover {
+.room-people-list > .user-item-wrapper:hover {
     background: #363940;
 }
