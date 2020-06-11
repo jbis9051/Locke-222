@@ -1,5 +1,5 @@
 import './RoomSelectorPanel.css';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import RoomItem from './RoomItem';
 import CurrentUserStore from '../../stores/CurrentUserStore';
 import abbreviateString from '../../helpers/abbreviateString';
@@ -11,6 +11,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function RoomSelectorPanel() {
     const [refreshLoaded, setRefreshLoaded] = useState(true);
+    const [currentAnimationFinished, setCurrentAnimationFinished] = useState(true);
+
+    const loader = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!loader.current) {
+            return;
+        }
+        function finishAnimation() {
+            setCurrentAnimationFinished(true);
+        }
+        if (refreshLoaded) {
+            loader.current!.addEventListener('animationiteration', finishAnimation);
+        } else {
+            loader.current!.removeEventListener('animationiteration', finishAnimation);
+        }
+    }, [refreshLoaded, loader]);
 
     return useObserver(() => (
         <div className={'room-selector'}>
@@ -28,17 +45,21 @@ export default function RoomSelectorPanel() {
             <div className={'room-divider'} />
             <RoomItem
                 onClick={() => {
+                    setCurrentAnimationFinished(false);
                     setRefreshLoaded(false);
                     IO.refreshFavoriteRooms().then(() => {
-                        setTimeout(() => {
-                            setRefreshLoaded(true);
-                        }, 1000); // sshh, don't tell anyone. It looks better this way.
+                        setRefreshLoaded(true);
                     });
                 }}
                 selected={false}
                 longname={'Refresh Favorite Rooms'}
                 shortname={
-                    <div className={`room-selector-refresh ${!refreshLoaded ? 'loading' : null}`}>
+                    <div
+                        ref={loader}
+                        className={`room-selector-refresh ${
+                            !currentAnimationFinished ? 'loading' : null
+                        }`}
+                    >
                         <FontAwesomeIcon icon={faRedoAlt} />
                     </div>
                 }

@@ -3,6 +3,7 @@
     background: #2e3137;
     overflow: auto;
 }
+
 .room-people-list-title {
     font-weight: 600;
     font-size: 12px;
@@ -11,10 +12,15 @@
     color: rgba(183, 183, 183, 0.82);
     margin-top: 10px;
 }
+
 .room-people-list .room-people-list-title:first-child {
     margin-top: 0;
 }
 
 .room-people-list > * {
     padding: 10px;
+}
+
+.room-people-list--item:hover {
+    background: #363940;
 }

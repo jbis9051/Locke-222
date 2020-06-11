@@ -3,32 +3,39 @@ import './RoomPeopleList.css';
 import RoomStore from '../../../stores/RoomStore';
 import UserItem from '../UserItem';
 import { useObserver } from 'mobx-react';
-import User from '../../../models/User';
 
 export default function RoomPeopleList() {
-    return useObserver(() => (
-        <div className={'room-people-list'}>
-            <div className={'room-people-list-title'}>Moderators</div>
-            {RoomStore.users
-                .filter((user) => user.is_moderator)
-                .reverse()
-                .map((user) => (
+    return useObserver(() => {
+        const moderators: React.ReactElement[] = [];
+        const ROs: React.ReactElement[] = [];
+        const members: React.ReactElement[] = [];
+
+        RoomStore.users.forEach((user) => {
+            const component = (
+                <div className={'room-people-list--item'}>
                     <UserItem popupDirection={'left'} key={user.id} user={user} />
-                ))}
-            <div className={'room-people-list-title'}>Room Owners</div>
-            {RoomStore.users
-                .filter((user) => user.is_owner && !user.is_moderator)
-                .reverse()
-                .map((user) => (
-                    <UserItem popupDirection={'left'} key={user.id} user={user} />
-                ))}
-            <div className={'room-people-list-title'}>Members</div>
-            {RoomStore.users
-                .filter((user) => !user.is_owner && !user.is_moderator)
-                .reverse()
-                .map((user) => (
-                    <UserItem popupDirection={'left'} key={user.id} user={user} />
-                ))}
-        </div>
-    ));
+                </div>
+            );
+            if (user.is_moderator) {
+                moderators.push(component);
+                return;
+            }
+            if (user.is_owner) {
+                ROs.push(component);
+                return;
+            }
+            members.push(component);
+        });
+
+        return (
+            <div className={'room-people-list'}>
+                <div className={'room-people-list-title'}>Moderators</div>
+                {moderators}
+                <div className={'room-people-list-title'}>Room Owners</div>
+                {ROs}
+                <div className={'room-people-list-title'}>Members</div>
+                {members}
+            </div>
+        );
+    });
 }
