@@ -31,7 +31,18 @@ export function htmlToClassicMarkdown(html: string) {
                     return `~~${parseNodeRoot(node)}~~`;
                 }
                 case 'div': {
-                    return decode(node.innerHTML.replace(/<br>/g, '\n')); // does this count? :D
+                    if (node.classNames.includes('full')) {
+                        return decode(node.innerHTML.replace(/<br>/g, '\n')); // does this count? :D
+                    }
+                    if (node.classNames.includes('onebox')) {
+                        if (node.classNames.includes('ob-image')) {
+                            return `![](${((node.querySelector(
+                                'img'
+                            )! as unknown) as HTMLImageElement).getAttribute('src')})`;
+                        }
+                        return '//TODO';
+                    }
+                    return '//TODO';
                 }
                 case 'pre': {
                     return '```\n' + decode(node.rawText.replace(/\r\n/g, '\n')) + '\n```';

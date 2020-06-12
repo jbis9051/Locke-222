@@ -14,6 +14,7 @@ import {
 import Message from '../models/Message';
 import {
     EventsResponse,
+    PingableResponse,
     RoomInfoResponse,
     ThumbsResponse,
     UserInfoResponse,
@@ -23,6 +24,7 @@ import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
 import UIStore from '../stores/UIStore';
 import { MainWindowState } from '../interfaces/UIStates';
+import { PingableUserObject } from '../interfaces/PingableUserObject';
 
 class IO {
     private fkey: string;
@@ -39,6 +41,7 @@ class IO {
         }
         RoomStore.id = roomId;
         await this.setUpWS();
+        this.refreshPingable();
         await Promise.all([this.setUpRoomInfo(), this.setUpRoomMembers()]);
         CurrentUserStore.addToRecent({ id: RoomStore.id, name: RoomStore.name });
         await Promise.all([this.setUpPreviousMessages(), this.setUpRecentStars()]);
@@ -150,6 +153,18 @@ class IO {
         CurrentUserStore.setFavoriteRooms(rooms);
     }
 
+    async refreshPingable() {
+        const data: PingableResponse = await fetch(`/rooms/pingable/${RoomStore.id}`).then((resp) =>
+            resp.json()
+        );
+        RoomStore.pingable = data.map<PingableUserObject>((pingable) => ({
+            id: pingable[0],
+            name: pingable[1],
+            last_seen: pingable[2],
+            last_message: pingable[3],
+        }));
+    }
+
     async setUpPreviousMessages(): Promise<void> {
         RoomStore.clearMessages();
         const response = await fetch(`/chats/${RoomStore.id}/events`, {
@@ -228,6 +243,21 @@ class IO {
             method: 'POST',
             body: formEncoder({
                 text: content,
+                fkey: this.fkey,
+            }),
+        });
+        const data = await resp.text();
+        if (resp.status === 200) {
+            return true;
+        }
+        throw data;
+    }
+
+    async edit(id: number, newContent: string) {
+        const resp = await fetch(`/messages/${id}`, {
+            method: 'POST',
+            body: formEncoder({
+                text: newContent,
                 fkey: this.fkey,
             }),
         });

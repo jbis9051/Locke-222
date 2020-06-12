@@ -72,13 +72,13 @@ class Message {
 
     private parseContent() {
         this._content = htmlToClassicMarkdown(this.rawContent);
-        const matches = Array.from(this._content.matchAll(/@([^\s]+)/g));
+        const matches = this._content.match(/@([^\s]+)/g) || [];
         matches.forEach((mention) => {
-            const user = RoomStore.getUserByMentionString(mention[1]);
+            const user = RoomStore.getUserByMentionString(mention);
             if (user) {
-                this.mentions.push({ username: mention[1], id: user.id });
+                this.mentions.push({ username: mention, id: user.id });
             } else {
-                this.mentions.push({ username: mention[1], id: null });
+                this.mentions.push({ username: mention, id: null });
             }
         });
     }

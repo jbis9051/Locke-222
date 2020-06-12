@@ -2,8 +2,15 @@ import { computed, observable } from 'mobx';
 import User from '../models/User';
 import Message from '../models/Message';
 import UserStore from './UserStore';
+import { PingableUserObject } from '../interfaces/PingableUserObject';
 
 class RoomStore {
+    set pingable(value: PingableUserObject[]) {
+        this._pingable = value;
+    }
+    get pingable(): PingableUserObject[] {
+        return this._pingable;
+    }
     get stars(): Message[] {
         return this._stars;
     }
@@ -54,6 +61,7 @@ class RoomStore {
     @observable private _users: User[] = []; // list of users currently in the room
     @observable private _messages: Message[] = [];
     @observable private _stars: Message[] = [];
+    @observable private _pingable: PingableUserObject[] = [];
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store
