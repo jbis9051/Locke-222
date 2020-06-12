@@ -31,8 +31,8 @@ export default function RoomSelectorPanel() {
 
     return useObserver(() => (
         <div className={'room-selector'}>
-            <RoomItem longname={'All Rooms'} shortname={'All'} />
-            {CurrentUserStore.recentRooms.length > 0 && <div className={'room-divider'} />}
+            {/*     <RoomItem longname={'All Rooms'} shortname={'All'} />
+            {CurrentUserStore.recentRooms.length > 0 && <div className={'room-divider'} />}*/}
             {CurrentUserStore.recentRooms.map((room) => (
                 <RoomItem
                     key={room.id}

@@ -6,3 +6,42 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
+.room-channels {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #bdbdbd;
+    font-size: 16px;
+}
+
+.room-channel {
+    font-weight: 600;
+    display: flex;
+    padding: 5px 20px;
+    border-radius: 7px;
+    margin: 2px 0;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.room-channel:hover {
+    background: #31363c;
+}
+
+.room-channel.selected {
+    background: #3d444a;
+    color: white;
+}
+
+.room-channel__icon {
+    margin-right: 10px;
+}
+.room-channel__name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+}

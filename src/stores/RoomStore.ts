@@ -6,6 +6,13 @@ import { PingableUserObject } from '../interfaces/PingableUserObject';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 
 class RoomStore {
+    get isFavorite(): boolean {
+        return this._isFavorite;
+    }
+
+    set isFavorite(value: boolean) {
+        this._isFavorite = value;
+    }
     set pingable(value: PingableUserObject[]) {
         this._pingable = value;
     }
@@ -63,6 +70,7 @@ class RoomStore {
     @observable private _messages: Message[] = [];
     @observable private _stars: Message[] = [];
     @observable private _pingable: PingableUserObject[] = [];
+    @observable private _isFavorite: boolean = false;
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store

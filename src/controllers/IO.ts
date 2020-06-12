@@ -22,9 +22,8 @@ import {
 import UserStore from '../stores/UserStore';
 import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
-import UIStore from '../stores/UIStore';
-import { MainWindowState } from '../interfaces/UIStates';
 import { PingableUserObject } from '../interfaces/PingableUserObject';
+import { StarFilter } from '../interfaces/StarFilter';
 
 class IO {
     private fkey: string;
@@ -131,6 +130,7 @@ class IO {
         const data: RoomInfoResponse = await fetch(`/rooms/thumbs/${RoomStore.id}`).then((resp) =>
             resp.json()
         );
+        RoomStore.isFavorite = data.isFavorite;
         RoomStore.name = data.name;
         RoomStore.description = data.description;
     }
@@ -330,6 +330,21 @@ class IO {
         }
 
         return message;
+    }
+
+    async getStars(page: number, filter: StarFilter): Promise<Message[]> {
+        const html = await fetch(
+            `/rooms/info/${RoomStore.id}/?tab=stars&filter=${filter}&page=${page}`
+        ).then((resp) => resp.text());
+        const doc = parse(html);
+        const messsageIds = doc
+            .querySelectorAll('.monologue')
+            .map((monologue) =>
+                parseInt(monologue.querySelector('.message').id.match(/[0-9]+/)![0])
+            );
+        return (
+            await Promise.all(messsageIds.map((messageId) => this.getMessage(messageId)))
+        ).filter((message) => !!message) as Message[];
     }
 }
 

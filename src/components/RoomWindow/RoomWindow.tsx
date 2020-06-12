@@ -7,10 +7,15 @@ import ChatWindow from './Chat/ChatWindow';
 import { MainWindowState } from '../../interfaces/UIStates';
 import UIStore from '../../stores/UIStore';
 import { useObserver } from 'mobx-react';
+import StarsChannel from './StarsChannel/StarsChannel';
+import { StarFilter } from '../../interfaces/StarFilter';
 
 export default function RoomWindow() {
     const windows: any = {
         [MainWindowState.MAIN_CHAT]: <ChatWindow />,
+        [MainWindowState.ALL_STARS]: <StarsChannel filter={StarFilter.ALL} />,
+        [MainWindowState.STARED_BY_ME]: <StarsChannel filter={StarFilter.STARED_BY_ME} />,
+        [MainWindowState.POSTED_BY_ME]: <StarsChannel filter={StarFilter.POSTED_BY_ME} />,
     };
 
     return useObserver(() => (
