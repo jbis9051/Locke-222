@@ -35,14 +35,9 @@ export function htmlToClassicMarkdown(html: string) {
                         return decode(node.innerHTML.replace(/<br>/g, '\n')); // does this count? :D
                     }
                     if (node.classNames.includes('onebox')) {
-                        if (node.classNames.includes('ob-image')) {
-                            return `![](${((node.querySelector(
-                                'img'
-                            )! as unknown) as HTMLImageElement).getAttribute('src')})`;
-                        }
-                        return '//TODO';
+                        throw 'Embedded one boxes are not supported';
                     }
-                    return '//TODO';
+                    return '//TODO div';
                 }
                 case 'pre': {
                     return '```\n' + decode(node.rawText.replace(/\r\n/g, '\n')) + '\n```';
@@ -52,7 +47,7 @@ export function htmlToClassicMarkdown(html: string) {
                         return `<kbd>${parseNodeRoot(node)}</kbd>`;
                     }
                     debugger;
-                    return '//TODO'; // TODO
+                    return '//TODO span'; // TODO
                 }
                 default: {
                     throw `Parse error: Unknown tag: ${node.tagName}`;
@@ -60,6 +55,13 @@ export function htmlToClassicMarkdown(html: string) {
             }
         }
         throw 'Parse error';
+    }
+
+    if (
+        document.childNodes[0] instanceof HTMLElement &&
+        (document.childNodes[0] as HTMLElement).classNames.includes('onebox')
+    ) {
+        return null;
     }
 
     function parseNodeRoot(root: Node): string {

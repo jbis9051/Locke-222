@@ -5,10 +5,17 @@ import RoomStore from '../stores/RoomStore';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 import { MessageEvent } from '../interfaces/WebSocketEvent';
 import UserStore from '../stores/UserStore';
+import { Onebox } from './onebox/Onebox';
+import getOneBox from './onebox';
 
 interface Mention {
     username: string;
     id: number | null;
+}
+
+export enum MessageType {
+    MARKDOWN,
+    ONEBOX,
 }
 
 class Message {
@@ -23,6 +30,8 @@ class Message {
     @observable private showParent: boolean = false; // is a reply?
     @observable private isStaredByMe: boolean = false;
     @observable private stars: number = 0;
+    @observable private type: MessageType = MessageType.MARKDOWN;
+    @observable private onebox?: Onebox | string;
 
     get isHardReply() {
         return this.showParent;
@@ -33,7 +42,13 @@ class Message {
     }
 
     get content() {
-        return this._content;
+        if (this.type === MessageType.MARKDOWN) {
+            return this._content;
+        }
+        if (typeof this.onebox === 'string') {
+            return this.onebox;
+        }
+        return this.onebox!.jsx;
     }
 
     get dateModified() {
@@ -71,7 +86,13 @@ class Message {
     }
 
     private parseContent() {
-        this._content = htmlToClassicMarkdown(this.rawContent);
+        const content = htmlToClassicMarkdown(this.rawContent);
+        if (!content) {
+            this.type = MessageType.ONEBOX;
+            getOneBox(this.rawContent).then((onebox) => (this.onebox = onebox));
+            return;
+        }
+        this._content = content;
         const matches = this._content.match(/@([^\s]+)/g) || [];
         matches.forEach((mention) => {
             const user = RoomStore.getUserByMentionString(mention);

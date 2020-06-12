@@ -3,6 +3,7 @@ import User from '../models/User';
 import Message from '../models/Message';
 import UserStore from './UserStore';
 import { PingableUserObject } from '../interfaces/PingableUserObject';
+import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 
 class RoomStore {
     set pingable(value: PingableUserObject[]) {
@@ -21,7 +22,7 @@ class RoomStore {
         return this._messages;
     }
     get description(): string {
-        return this._description;
+        return htmlToClassicMarkdown(this._description)!;
     }
     get name(): string {
         return this._name;

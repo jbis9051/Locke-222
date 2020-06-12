@@ -5,7 +5,7 @@ import RoomStore from '../../../stores/RoomStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import RoomDropDown from './RoomDropDown';
-import { parseMarkdown } from '../../../helpers/markdownHelper';
+import { htmlToClassicMarkdown, parseMarkdown } from '../../../helpers/markdownHelper';
 import UIStore from '../../../stores/UIStore';
 import PopOutMenu from '../../PopOutMenu';
 
