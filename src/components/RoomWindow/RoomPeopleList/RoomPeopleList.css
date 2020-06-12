@@ -1,6 +1,6 @@
 .room-people-list {
     width: 200px;
-    background: #2e3137;
+    background: var(--dark-gray);
     overflow: auto;
 }
 
@@ -22,5 +22,5 @@
 }
 
 .room-people-list > .user-item-wrapper:hover {
-    background: #363940;
+    background: var(--gray);
 }

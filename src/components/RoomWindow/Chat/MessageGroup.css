@@ -17,5 +17,5 @@
 
 .message-group__timestamp {
     font-size: small;
-    color: gray;
+    color: var(--lighter-gray);
 }

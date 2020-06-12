@@ -1,7 +1,7 @@
 .room-info {
     width: 250px;
     padding: 10px;
-    background: #2e3137;
+    background: var(--dark-gray);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

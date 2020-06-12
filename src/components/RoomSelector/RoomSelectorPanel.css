@@ -1,7 +1,7 @@
 .room-selector {
     flex-basis: 80px;
     min-width: 80px;
-    background: #202225;
+    background: var(--darker-gray);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,7 +12,7 @@
     margin: 5px;
     height: 3px;
     min-height: 3px;
-    background: #333639;
+    background: var(--light-gray);
     border-radius: 7px;
 }
 

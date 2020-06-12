@@ -5,10 +5,54 @@
 }
 
 .single-message__container:hover {
-    background-color: #2e3137;
+    background-color: var(--dark-gray);
+}
+
+.single-message__info {
+    position: relative;
+    visibility: hidden;
+    min-width: 5em;
+    margin-left: 1em;
+}
+
+/* todo: give this a subtle animation */
+.single-message__container:hover > .single-message__info {
+    visibility: visible;
 }
 
 .single-message__timestamp {
+    text-align: right;
     font-size: small;
-    color: gray;
+    color: var(--lighter-gray);
+}
+
+.single-message__options {
+    z-index: 10;
+    position: absolute;
+    top: 100%;
+    right: 1px;
+    border-radius: 5px;
+    background-color: var(--dark-gray);
+    box-shadow: 0 0 10px 1px var(--darker-gray);
+    opacity: 0.75;
+}
+
+.single-message__options:hover {
+    opacity: 1;
+}
+
+.single-message__button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
+    color: var(--lighter-gray);
+}
+
+.single-message__button:hover {
+    background-color: var(--light-gray);
+    color: white;
 }

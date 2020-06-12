@@ -1,5 +1,11 @@
 .main-app-wrapper {
     height: 100%;
+
+    --lighter-gray: #9f9f9f;
+    --light-gray: #484c55;
+    --gray: #35393e;
+    --dark-gray: #2e3137;
+    --darker-gray: #202225;
 }
 
 .app-container {

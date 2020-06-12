@@ -1,6 +1,6 @@
 .room-window {
     flex: 1;
-    background: #35393e;
+    background: var(--gray);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -8,7 +8,7 @@
 
 .room-content-wrapper {
     flex: 1;
-    background: #35393e;
+    background: var(--gray);
     display: flex;
     height: 100%;
     overflow: hidden;
