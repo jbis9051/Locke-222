@@ -25,11 +25,13 @@ export default function RoomPeopleList() {
 
         return (
             <div className={'room-people-list'}>
-                <div className={'room-people-list-title'}>Moderators</div>
+                {moderators.length > 0 && (
+                    <div className={'room-people-list-title'}>Moderators</div>
+                )}
                 {moderators}
-                <div className={'room-people-list-title'}>Room Owners</div>
+                {ROs.length > 0 && <div className={'room-people-list-title'}>Room Owners</div>}
                 {ROs}
-                <div className={'room-people-list-title'}>Members</div>
+                {members.length > 0 && <div className={'room-people-list-title'}>Members</div>}
                 {members}
             </div>
         );

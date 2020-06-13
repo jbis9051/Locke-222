@@ -12,6 +12,9 @@ class User {
         return this._image_url;
     }
     get name(): string {
+        if (this.is_moderator) {
+            return `${this._name} ♦`;
+        }
         return this._name;
     }
     get id(): number {
