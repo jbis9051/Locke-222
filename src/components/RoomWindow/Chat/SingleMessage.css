@@ -8,10 +8,13 @@
     background-color: var(--dark-gray);
 }
 
+.single-message__content {
+    flex: 1;
+}
+
 .single-message__info {
     position: relative;
     visibility: hidden;
-    min-width: 5em;
     margin-left: 1em;
 }
 
