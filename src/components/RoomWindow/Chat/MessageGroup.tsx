@@ -24,7 +24,7 @@ const MessageGroup: React.FunctionComponent<IMessageGroupProps> = ({ messages })
                         displayAvatar={false}
                     />
                     <span className="message-group__timestamp">
-                        {format(messages[0].dateCreated)}
+                        {format(messages[0].dateCreated, 'relative')}
                     </span>
                 </div>
                 <div>

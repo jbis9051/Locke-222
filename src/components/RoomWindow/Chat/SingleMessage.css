@@ -8,13 +8,10 @@
     background-color: var(--dark-gray);
 }
 
-.single-message__content {
-    flex: 1;
-}
-
 .single-message__info {
     position: relative;
     visibility: hidden;
+    min-width: 4em;
     margin-left: 1em;
 }
 
@@ -32,11 +29,17 @@
 .single-message__options {
     z-index: 10;
     position: absolute;
+
+    display: grid;
+    grid-auto-flow: column;
+
     top: 100%;
     right: 1px;
+
     border-radius: 5px;
     background-color: var(--dark-gray);
     box-shadow: 0 0 10px 1px var(--darker-gray);
+
     opacity: 0.75;
 }
 

@@ -1,4 +1,5 @@
 import { computed, observable } from 'mobx';
+import differenceInHours from 'date-fns/differenceInHours';
 import User from '../models/User';
 import Message from '../models/Message';
 import UserStore from './UserStore';
@@ -53,9 +54,13 @@ class RoomStore {
     @computed get groupedMessages(): Message[][] {
         const groupArray: Message[][] = [];
         for (const message of this._messages) {
-            const lastItem = groupArray[groupArray.length - 1];
-            if (message.user.id === lastItem?.[0]?.user.id) {
-                lastItem.push(message);
+            const lastArray = groupArray[groupArray.length - 1];
+            const lastItem = lastArray?.[lastArray?.length - 1];
+            if (
+                message.user.id === lastItem?.user.id &&
+                differenceInHours(message.dateCreated, lastItem?.dateCreated) < 1
+            ) {
+                lastArray.push(message);
             } else {
                 groupArray.push([message]);
             }

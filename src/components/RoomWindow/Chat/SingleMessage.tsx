@@ -20,7 +20,9 @@ const SingleMessage: React.FunctionComponent<IMessageProps> = ({ message }) => {
         <div className="single-message__container">
             <div className="single-message__content">{message.content}</div>
             <div className="single-message__info">
-                <div className="single-message__timestamp">{format(message.dateCreated)}</div>
+                <div className="single-message__timestamp">
+                    {format(message.dateCreated, 'time')}
+                </div>
                 <div className="single-message__options">
                     {sentByCurrentUser ? (
                         <div
