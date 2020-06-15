@@ -141,7 +141,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "pretty-quick --staged"
+            "pre-commit": "pretty-quick --staged && yarn -s lint --quiet"
         }
     },
     "devDependencies": {
