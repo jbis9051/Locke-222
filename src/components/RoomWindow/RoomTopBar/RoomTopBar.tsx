@@ -1,45 +1,47 @@
 import { useObserver } from 'mobx-react';
 import React, { useRef, useState } from 'react';
 import './RoomTopBar.css';
-import RoomStore from '../../../stores/RoomStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import RoomStore from '../../../stores/RoomStore';
 import RoomDropDown from './RoomDropDown';
-import { htmlToClassicMarkdown, parseMarkdown } from '../../../helpers/markdownHelper';
+import { parseMarkdown } from '../../../helpers/markdownHelper';
 import UIStore from '../../../stores/UIStore';
 import PopOutMenu from '../../PopOutMenu';
 
-export default function RoomTopBar() {
+export default function RoomTopBar(): React.ReactElement {
     const [roomMenuOpen, setRoomMenuOpen] = useState(false);
-    const roomButton = useRef<HTMLDivElement>();
+    const roomButton = useRef<HTMLDivElement>(null);
 
     const shouldClose = useRef(() => {
         setRoomMenuOpen(false);
     });
 
     return useObserver(() => (
-        <div className={'room-top-bar'}>
+        <div className="room-top-bar">
             <div
-                className={'room-top-bar--name-wrapper'}
-                ref={roomButton as any}
+                className="room-top-bar--name-wrapper"
+                ref={roomButton}
                 onClick={() => setRoomMenuOpen(true)}
             >
-                <span className={'room-top-bar--name-wrapper__name'}>{RoomStore.name}</span>
-                <span className={'room-top-bar--name-wrapper__arrow'}>
+                <span className="room-top-bar--name-wrapper__name">{RoomStore.name}</span>
+                <span className="room-top-bar--name-wrapper__arrow">
                     <FontAwesomeIcon icon={faChevronDown} />
                 </span>
                 <PopOutMenu
                     shouldClose={shouldClose.current}
                     visible={roomMenuOpen}
                     elRect={roomButton.current?.getBoundingClientRect()}
-                    direction={'bottom'}
+                    direction="bottom"
                 >
                     <RoomDropDown />
                 </PopOutMenu>
             </div>
             <div
-                onClick={() => (UIStore.descriptionModal = true)}
-                className={'room-top-bar--description-wrapper'}
+                onClick={() => {
+                    UIStore.descriptionModal = true;
+                }}
+                className="room-top-bar--description-wrapper"
             >
                 {parseMarkdown(RoomStore.description)}
             </div>

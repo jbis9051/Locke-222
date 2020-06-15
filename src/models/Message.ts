@@ -1,3 +1,4 @@
+import React from 'react';
 import { observable } from 'mobx';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import User from './User';
@@ -20,28 +21,40 @@ export enum MessageType {
 
 class Message {
     readonly id: number;
+
     readonly user: User;
-    @observable private _content: string = ''; // parsed content
+
+    @observable private _content = ''; // parsed content
+
     private rawContent: string; // raw content
+
     readonly dateCreated: Date;
+
     @observable private _dateModified: Date;
+
     @observable private mentions: Mention[] = [];
+
     @observable private parentId: number | null = null; // is a direct reply?
-    @observable private showParent: boolean = false; // is a reply?
-    @observable private isStaredByMe: boolean = false;
-    @observable private stars: number = 0;
+
+    @observable private readonly showParent: boolean = false; // is a reply?
+
+    @observable private isStaredByMe = false;
+
+    @observable private stars = 0;
+
     @observable private type: MessageType = MessageType.MARKDOWN;
+
     @observable private onebox?: Onebox | string;
 
-    get isHardReply() {
+    get isHardReply(): boolean {
         return this.showParent;
     }
 
-    get isMention() {
+    get isMention(): boolean {
         return this.mentions.length > 0;
     }
 
-    get content() {
+    get content(): string | React.ReactElement {
         if (this.type === MessageType.MARKDOWN) {
             return this._content;
         }
@@ -51,7 +64,7 @@ class Message {
         return this.onebox!.jsx;
     }
 
-    get dateModified() {
+    get dateModified(): Date {
         return this._dateModified;
     }
 
@@ -79,7 +92,7 @@ class Message {
         this.parseContent();
     }
 
-    edit(updatedContent: string) {
+    edit(updatedContent: string): void {
         this._dateModified = new Date();
         this.rawContent = updatedContent;
         this.parseContent();
@@ -89,7 +102,11 @@ class Message {
         const content = htmlToClassicMarkdown(this.rawContent);
         if (!content) {
             this.type = MessageType.ONEBOX;
-            getOneBox(this.rawContent).then((onebox) => (this.onebox = onebox));
+            getOneBox(this.rawContent)
+                .then((onebox) => {
+                    this.onebox = onebox;
+                })
+                .catch(console.error);
             return;
         }
         this._content = content;

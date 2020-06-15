@@ -8,7 +8,7 @@ import 'mobx-react/batchingForReactDom';
 
 const body = document.getElementById('chat-body')!;
 
-for (let child of body.children) {
+for (const child of body.children) {
     (child as HTMLElement).style.display = 'none';
 }
 

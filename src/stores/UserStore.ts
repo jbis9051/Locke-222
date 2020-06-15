@@ -1,7 +1,6 @@
 import { observable } from 'mobx';
 import User from '../models/User';
 import IO from '../controllers/IO';
-import { isNullOrUndefined } from 'util';
 
 class UserStore {
     @observable private users: User[] = []; // users cache

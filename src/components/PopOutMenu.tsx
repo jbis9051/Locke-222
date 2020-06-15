@@ -3,30 +3,31 @@ import './PopOutMenu.css';
 
 const OFFSET_X = 20;
 const BOTTOM_OFFSET = 10;
-let func: any = null;
+const func: any = null;
 
-export default function PopOutMenu({
+interface IPopOutMenuProps {
+    visible: boolean;
+    elRect: DOMRect | undefined;
+    direction: 'left' | 'right' | 'bottom';
+    shouldClose?: () => void;
+}
+
+const PopOutMenu: React.FunctionComponent<IPopOutMenuProps> = ({
     children,
     visible,
     elRect,
     direction,
     shouldClose,
-}: {
-    children: React.ReactElement;
-    visible: boolean;
-    elRect: DOMRect | undefined;
-    direction: 'left' | 'right' | 'bottom';
-    shouldClose?: () => void;
-}) {
+}) => {
     const [styles, setStyles] = useState({});
 
     const popOutMenu = useCallback(
-        (popOutEl) => {
+        (popOutEl: HTMLDivElement) => {
             if (!popOutEl || !elRect) {
                 return;
             }
             const popOutElRect = popOutEl.getBoundingClientRect();
-            const style: any = {
+            const style: Record<string, number> = {
                 top: elRect.top + document.body.scrollTop,
                 left: elRect.left + OFFSET_X + document.body.scrollLeft,
             };
@@ -49,9 +50,10 @@ export default function PopOutMenu({
             style.width = popOutElRect.width; // we don't want it moving around
             setStyles(style);
         },
-        [elRect, children]
+        [elRect, direction]
     );
 
+    // todo: rethink this
     useEffect(() => {
         if (!shouldClose) {
             return;
@@ -65,14 +67,17 @@ export default function PopOutMenu({
             window.removeEventListener('click', shouldClose);
             window.removeEventListener('resize', shouldClose);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visible]);
 
     if (!visible) {
         return null;
     }
     return (
-        <div ref={popOutMenu} className={'popout-menu'} style={styles}>
+        <div ref={popOutMenu} className="popout-menu" style={styles}>
             {children}
         </div>
     );
-}
+};
+
+export default PopOutMenu;

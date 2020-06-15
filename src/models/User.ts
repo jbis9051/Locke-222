@@ -5,32 +5,40 @@ class User {
     get is_owner(): boolean {
         return this._is_owner;
     }
+
     get is_moderator(): boolean {
         return this._is_moderator;
     }
-    get image_url(): string | null {
+
+    get image_url(): string {
         return this._image_url;
     }
+
     get name(): string {
         if (this.is_moderator) {
             return `${this._name} ♦`;
         }
         return this._name;
     }
+
     get id(): number {
         return this._id;
     }
 
     @observable private _id: number;
+
     @observable private _name: string;
-    @observable private _image_url: string | null;
+
+    @observable private _image_url: string;
+
     @observable private _is_moderator: boolean;
+
     @observable private _is_owner: boolean;
 
     constructor(
         id: number,
         name: string,
-        image_url: string | null,
+        image_url: string,
         is_moderator: boolean,
         is_owner: boolean
     ) {

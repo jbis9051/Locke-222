@@ -7,46 +7,26 @@ import { PingableUserObject } from '../interfaces/PingableUserObject';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 
 class RoomStore {
-    get isFavorite(): boolean {
-        return this._isFavorite;
-    }
-
-    set isFavorite(value: boolean) {
-        this._isFavorite = value;
-    }
-    set pingable(value: PingableUserObject[]) {
-        this._pingable = value;
-    }
-    get pingable(): PingableUserObject[] {
-        return this._pingable;
-    }
     get stars(): Message[] {
         return this._stars;
     }
+
     get users(): User[] {
         return this._users;
     }
+
     get messages(): Message[] {
         return this._messages;
     }
+
     get description(): string {
         return htmlToClassicMarkdown(this._description)!;
     }
-    get name(): string {
-        return this._name;
-    }
-    set id(value: number) {
-        this._id = value;
-    }
+
     set description(value: string) {
         this._description = value;
     }
-    set name(value: string) {
-        this._name = value;
-    }
-    get id(): number {
-        return this._id;
-    }
+
     /*
         Given: [ { userId: 1... }, { userId: 2... }, { userId: 2... }, { userId: 1... } ]
         Return: [ [ { userId: 1... } ], [ { userId: 2... }, { userId: 2... } ], [ { userID: 1... } ] ]
@@ -68,14 +48,21 @@ class RoomStore {
         return groupArray;
     }
 
-    @observable private _id: number = 0;
-    @observable private _name: string = '';
-    @observable private _description: string = '';
+    @observable id = 0;
+
+    @observable name = '';
+
+    @observable private _description = '';
+
     @observable private _users: User[] = []; // list of users currently in the room
+
     @observable private _messages: Message[] = [];
+
     @observable private _stars: Message[] = [];
-    @observable private _pingable: PingableUserObject[] = [];
-    @observable private _isFavorite: boolean = false;
+
+    @observable pingable: PingableUserObject[] = [];
+
+    @observable isFavorite = false;
 
     addUser(user: User) {
         UserStore.addUser(user); // add them to the user store

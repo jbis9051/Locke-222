@@ -9,11 +9,11 @@ export default function Modal({
 }: {
     children: React.ReactElement[];
     onClick?: () => void;
-}) {
+}): React.ReactElement {
     return (
-        <div className={'modal'}>
-            <div className={'modal--content'}>
-                <div className={'modal--x'} onClick={onClick}>
+        <div className="modal">
+            <div className="modal--content">
+                <div className="modal--x" onClick={onClick}>
                     <FontAwesomeIcon icon={faTimes} />
                 </div>
                 {children}

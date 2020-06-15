@@ -1,8 +1,8 @@
+import { parse } from 'node-html-parser';
 import formEncoder from '../helpers/formEncoder';
 import RoomStore from '../stores/RoomStore';
 import { UserObject } from '../interfaces/UserObject';
 import User from '../models/User';
-import { parse } from 'node-html-parser';
 import {
     Event,
     EventType,
@@ -18,29 +18,32 @@ import {
     RoomInfoResponse,
     ThumbsResponse,
     UserInfoResponse,
+    WebSocketAuthResponse,
 } from '../interfaces/APIResponses';
 import UserStore from '../stores/UserStore';
 import { RoomObject } from '../interfaces/RoomObject';
 import CurrentUserStore from '../stores/CurrentUserStore';
 import { PingableUserObject } from '../interfaces/PingableUserObject';
 import { StarFilter } from '../interfaces/StarFilter';
+import { fetchJsonAsType, isNotNullish } from '../helpers/typeUtils';
 
 class IO {
-    private fkey: string;
+    private readonly fkey: string;
+
     private ws: WebSocket | null = null;
 
     constructor(fkey: string) {
         this.fkey = fkey;
-        this.refreshFavoriteRooms();
+        this.refreshFavoriteRooms().catch(console.error);
     }
 
-    async changeRoom(roomId: number, force: boolean = false) {
+    async changeRoom(roomId: number, force = false) {
         if (!force && roomId === RoomStore.id) {
             return;
         }
         RoomStore.id = roomId;
         await this.setUpWS();
-        this.refreshPingable();
+        this.refreshPingable().catch(console.error);
         await Promise.all([this.setUpRoomInfo(), this.setUpRoomMembers()]);
         CurrentUserStore.addToRecent({ id: RoomStore.id, name: RoomStore.name });
         await Promise.all([this.setUpPreviousMessages(), this.setUpRecentStars()]);
@@ -49,7 +52,7 @@ class IO {
     // ---- SETUP --- //
 
     async setUpWS() {
-        const data = await fetch('/ws-auth', {
+        const data = await fetchJsonAsType<WebSocketAuthResponse>('/ws-auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -58,20 +61,20 @@ class IO {
                 roomid: RoomStore.id,
                 fkey: this.fkey,
             }),
-        }).then((resp) => resp.json());
+        });
 
         const wsURL = data.url;
-        const ws = new WebSocket(wsURL + '?l=99999999999'); // https://github.com/jbis9051/JamesSOBot/blob/master/docs/CHAT_API.md#obtaining-the-l-param
+        const ws = new WebSocket(`${wsURL}?l=99999999999`); // https://github.com/jbis9051/JamesSOBot/blob/master/docs/CHAT_API.md#obtaining-the-l-param
         ws.addEventListener('message', (event) => {
             this.handleMessage(JSON.parse(event.data));
         });
         ws.addEventListener('error', (event) => {
             console.error(`WebSocket Closed: ${JSON.stringify(event)}`);
-            //this.setUpWS();
+            // this.setUpWS();
         });
         ws.addEventListener('close', (event) => {
             console.log(`WebSocket Closed: ${JSON.stringify(event)}`);
-            //this.setUpWS();
+            // this.setUpWS();
         });
         if (this.ws) {
             this.ws.close();
@@ -86,14 +89,14 @@ class IO {
 
         const html = await fetch(`/rooms/${RoomStore.id}`).then((resp) => resp.text());
         const doc = parse(html, { script: true });
-        let code: string = '';
+        let code = '';
         doc.querySelectorAll('script').forEach((element) => {
             const innerHTML = element.rawText;
             if (innerHTML.includes('CHAT.RoomUsers.initPresent')) {
                 code = innerHTML;
             }
         });
-        let members: UserObject[];
+        let members: UserObject[] = [];
         const CHAT = {
             RoomUsers: {
                 initPresent: (peoples: UserObject[]) => {
@@ -103,20 +106,21 @@ class IO {
             },
         };
 
+        // eslint-disable-next-line prefer-const
         let SERVER_TIME_OFFSET = 0;
-        const $ = (func: any) => {
+        const $ = (func: () => void) => {
             func();
         };
-        let currentUser: number = 0;
-        const StartChat = (_: any, currentUserId: number) => {
+        let currentUser = 0;
+        const StartChat = (_: never, currentUserId: number) => {
             currentUser = currentUserId;
         };
+        // eslint-disable-next-line no-eval
         eval(code);
 
         RoomStore.clearUsers();
         UserStore.clearStore();
 
-        // @ts-ignore
         members
             .map((userObject) => User.fromUserObject(userObject))
             .forEach((user) => RoomStore.addUser(user));
@@ -127,9 +131,7 @@ class IO {
     }
 
     async setUpRoomInfo() {
-        const data: RoomInfoResponse = await fetch(`/rooms/thumbs/${RoomStore.id}`).then((resp) =>
-            resp.json()
-        );
+        const data: RoomInfoResponse = await fetchJsonAsType(`/rooms/thumbs/${RoomStore.id}`);
         RoomStore.isFavorite = data.isFavorite;
         RoomStore.name = data.name;
         RoomStore.description = data.description;
@@ -140,10 +142,10 @@ class IO {
         const doc = parse(html);
 
         if (doc.querySelectorAll('.favorite-room').length === 0) {
-            return [];
+            return;
         }
         const rooms: RoomObject[] = doc.querySelectorAll('.roomcard').map((room) => {
-            const id = parseInt(room.id.match(/[0-9]+/)![0]);
+            const id = parseInt(/[0-9]+/.exec(room.id)![0], 10);
             const name = room.querySelector('.room-name').getAttribute('title');
             return {
                 id,
@@ -154,9 +156,7 @@ class IO {
     }
 
     async refreshPingable() {
-        const data: PingableResponse = await fetch(`/rooms/pingable/${RoomStore.id}`).then((resp) =>
-            resp.json()
-        );
+        const data: PingableResponse = await fetchJsonAsType(`/rooms/pingable/${RoomStore.id}`);
         RoomStore.pingable = data.map<PingableUserObject>((pingable) => ({
             id: pingable[0],
             name: pingable[1],
@@ -167,7 +167,7 @@ class IO {
 
     async setUpPreviousMessages(): Promise<void> {
         RoomStore.clearMessages();
-        const response = await fetch(`/chats/${RoomStore.id}/events`, {
+        const data = await fetchJsonAsType<EventsResponse>(`/chats/${RoomStore.id}/events`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -180,7 +180,6 @@ class IO {
             }),
         });
         const messages: Message[] = [];
-        const data = (await response.json()) as EventsResponse;
         for (const event of data.events) {
             const message = await Message.fromEvent(event);
             if (message) messages.push(message);
@@ -195,26 +194,27 @@ class IO {
 
         const stars: (Message | null)[] = await Promise.all(
             doc.querySelectorAll('li').map((li) => {
-                return this.getMessage(parseInt(li.id.match(/[0-9]+/)![0]));
+                return this.getMessage(parseInt(/[0-9]+/.exec(li.id)![0], 10));
             })
         );
 
-        RoomStore.addStar(...(stars.filter((star) => !!star) as any));
+        RoomStore.addStar(...stars.filter(isNotNullish));
     }
 
     // ---- EVENT HANDLERS --- //
 
-    async handleMessage(event: WebSocketEvent) {
+    handleMessage(wsEvent: WebSocketEvent) {
         const roomKey = `r${RoomStore.id}`;
-        if (!event.hasOwnProperty(roomKey)) {
+        if (!wsEvent.hasOwnProperty(roomKey)) {
             return;
         }
-        if (!event[roomKey].hasOwnProperty('e')) {
+        if (!wsEvent[roomKey].hasOwnProperty('e')) {
             return;
         }
-        const events = (event[roomKey] as RoomEvent).e;
+        const events = (wsEvent[roomKey] as RoomEvent).e;
 
-        const eventFunctions = {
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        const eventFunctions: Partial<Record<EventType, Function>> = {
             [EventType.NEW_MESSAGE]: async (event: MessageEvent) => {
                 const message = await Message.fromEvent(event);
                 if (message) RoomStore.addMessage(message);
@@ -228,11 +228,8 @@ class IO {
             },
         };
 
-        events.forEach((anEvent: Event) => {
-            if (eventFunctions.hasOwnProperty(anEvent.event_type)) {
-                // @ts-ignore
-                eventFunctions[anEvent.event_type](anEvent);
-            }
+        events.forEach((event: Event) => {
+            eventFunctions[event.event_type]?.(event);
         });
     }
 
@@ -250,7 +247,7 @@ class IO {
         if (resp.status === 200) {
             return true;
         }
-        throw data;
+        throw new Error(data);
     }
 
     async edit(id: number, newContent: string) {
@@ -265,7 +262,7 @@ class IO {
         if (resp.status === 200) {
             return true;
         }
-        throw data;
+        throw new Error(data);
     }
 
     async starMessageToggle(messageId: number) {
@@ -279,13 +276,13 @@ class IO {
         if (resp.status === 200) {
             return true;
         }
-        throw data;
+        throw new Error(data);
     }
 
     // ---- IN --- //
 
     async getUserInfo(userId: number): Promise<UserObject> {
-        const data: UserInfoResponse = await fetch('/user/info', {
+        const data: UserInfoResponse = await fetchJsonAsType('/user/info', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -294,17 +291,17 @@ class IO {
                 ids: userId,
                 roomId: RoomStore.id,
             }),
-        }).then((resp) => resp.json());
+        });
 
         return data.users[0];
     }
 
-    async getUserThumb(userId: number): Promise<ThumbsResponse> {
-        return await fetch(`/users/thumbs/${userId}`).then((resp) => resp.json());
+    getUserThumb(userId: number): Promise<ThumbsResponse> {
+        return fetchJsonAsType(`/users/thumbs/${userId}`);
     }
 
     async getMessage(messageId: number): Promise<Message | null> {
-        const data: EventsResponse = await fetch(`/chats/${RoomStore.id}/events`, {
+        const data: EventsResponse = await fetchJsonAsType(`/chats/${RoomStore.id}/events`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -315,7 +312,7 @@ class IO {
                 msgCount: 1,
                 fkey: this.fkey,
             }),
-        }).then((resp) => resp.json());
+        });
 
         const messageEvent = data.events[0];
 
@@ -340,7 +337,7 @@ class IO {
         const messsageIds = doc
             .querySelectorAll('.monologue')
             .map((monologue) =>
-                parseInt(monologue.querySelector('.message').id.match(/[0-9]+/)![0])
+                parseInt(/[0-9]+/.exec(monologue.querySelector('.message').id)![0], 10)
             );
         return (
             await Promise.all(messsageIds.map((messageId) => this.getMessage(messageId)))

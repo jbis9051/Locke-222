@@ -1,6 +1,6 @@
-import { Onebox } from './Onebox';
 import React from 'react';
 import { HTMLElement } from 'node-html-parser';
+import { Onebox } from './Onebox';
 
 export default class OBImage extends Onebox {
     static async create(content: HTMLElement): Promise<OBImage> {
@@ -9,7 +9,7 @@ export default class OBImage extends Onebox {
         return obImage;
     }
 
-    async parse(html: HTMLElement): Promise<void> {
+    parse(html: HTMLElement): Promise<void> {
         this._jsx = (
             <img
                 src={
@@ -19,5 +19,6 @@ export default class OBImage extends Onebox {
                 }
             />
         );
+        return Promise.resolve();
     }
 }

@@ -1,10 +1,10 @@
-import Message from '../../../models/Message';
 import React from 'react';
-import UserItem from '../UserItem';
 import { useObserver } from 'mobx-react';
-import './MessageGroup.css';
+import Message from '../../../models/Message';
+import UserItem from '../UserItem';
 import SingleMessage from './SingleMessage';
 import format from '../../../helpers/dateFormatter';
+import './MessageGroup.css';
 
 interface IMessageGroupProps {
     messages: Message[];

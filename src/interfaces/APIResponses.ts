@@ -52,4 +52,8 @@ export interface EventsResponse {
     time: number;
 }
 
+export interface WebSocketAuthResponse {
+    url: string;
+}
+
 export type PingableResponse = [number, string, number, number][]; // [id, name, last seen, last message] I'm not sure the order of last seen and last message but they are in unix time

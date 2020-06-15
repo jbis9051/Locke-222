@@ -1,5 +1,5 @@
+import React, { useRef, useState } from 'react';
 import User from '../../models/User';
-import React, { useEffect, useRef, useState } from 'react';
 import './UserItem.css';
 import PopOutMenu from '../PopOutMenu';
 import IO from '../../controllers/IO';
@@ -15,10 +15,10 @@ export default function UserItem({
     displayName?: boolean;
     displayAvatar?: boolean;
     popupDirection: 'left' | 'right';
-}) {
+}): React.ReactElement {
     const [visible, setVisible] = useState(false);
     const [userData, setUserData] = useState<ThumbsResponse | null>(null);
-    const userButton = useRef<Element>();
+    const userButton = useRef<HTMLDivElement>(null);
 
     const shouldClose = useRef(() => {
         setUserData(null);
@@ -26,10 +26,12 @@ export default function UserItem({
     });
 
     function tooltipOpen() {
-        IO.getUserThumb(user.id).then((thumb) => {
-            setUserData(thumb);
-            setVisible(true);
-        });
+        IO.getUserThumb(user.id)
+            .then((thumb) => {
+                setUserData(thumb);
+                setVisible(true);
+            })
+            .catch(console.error);
     }
 
     const roles = [];
@@ -43,21 +45,20 @@ export default function UserItem({
         roles.push('Member');
     }
 
-    // @ts-ignore
     return (
-        <div ref={userButton as any} onClick={tooltipOpen} className={'user-item-wrapper'}>
-            <div className={'user-item'}>
+        <div ref={userButton} onClick={tooltipOpen} className="user-item-wrapper">
+            <div className="user-item">
                 {displayAvatar && (
                     <img
-                        className={'user-item__image'}
-                        width={'30px'}
-                        height={'30px'}
+                        className="user-item__image"
+                        width="30px"
+                        height="30px"
                         style={displayName ? { marginRight: '10px' } : undefined}
-                        src={user.image_url + '?s=42'}
+                        src={`${user.image_url}?s=42`}
                     />
                 )}
                 {displayName && (
-                    <span className={'user-item--name'}>
+                    <span className="user-item--name">
                         <span>{user.name}</span>
                     </span>
                 )}
@@ -68,34 +69,32 @@ export default function UserItem({
                 elRect={userButton.current?.getBoundingClientRect()}
                 visible={visible}
             >
-                <div onClick={(e) => e.stopPropagation()} className={'user-popout-menu'}>
-                    <div className={'user-popout-menu--user-info'}>
+                <div onClick={(e) => e.stopPropagation()} className="user-popout-menu">
+                    <div className="user-popout-menu--user-info">
                         <img
-                            src={user.image_url!}
-                            className={'user-popout-menu--user-info__profile-image'}
+                            src={user.image_url}
+                            className="user-popout-menu--user-info__profile-image"
                         />
-                        <span className={'user-popout-menu--user-info__name'}>{user.name}</span>
-                        <div className={'user-popout-menu--user-info--links'}>
-                            <a target={'_blank'} href={`/users/${user.id}`}>
+                        <span className="user-popout-menu--user-info__name">{user.name}</span>
+                        <div className="user-popout-menu--user-info--links">
+                            <a target="_blank" rel="noreferrer" href={`/users/${user.id}`}>
                                 Chat Profile
                             </a>
-                            <a target={'_blank'} href={userData?.profileUrl}>
+                            <a target="_blank" rel="noreferrer" href={userData?.profileUrl}>
                                 Site Profile
                             </a>
                         </div>
                     </div>
-                    <div className={'user-popout-menu--user-bio'}>
-                        <div className={'user-popout-menu--user-bio--topic'}>Role</div>
+                    <div className="user-popout-menu--user-bio">
+                        <div className="user-popout-menu--user-bio--topic">Role</div>
                         <span>{roles.join(', ')}</span>
                         {userData ? (
-                            <React.Fragment>
-                                <div className={'user-popout-menu--user-bio--topic'}>
-                                    Reputation
-                                </div>
+                            <>
+                                <div className="user-popout-menu--user-bio--topic">Reputation</div>
                                 <span>{userData.reputation}</span>
-                                <div className={'user-popout-menu--user-bio--topic'}>Bio</div>
+                                <div className="user-popout-menu--user-bio--topic">Bio</div>
                                 <span>{userData.user_message}</span>
-                            </React.Fragment>
+                            </>
                         ) : null}
                     </div>
                 </div>

@@ -1,15 +1,15 @@
 import './RoomSelectorPanel.css';
 import React, { useEffect, useRef, useState } from 'react';
+import { useObserver } from 'mobx-react';
+import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import RoomItem from './RoomItem';
 import CurrentUserStore from '../../stores/CurrentUserStore';
 import abbreviateString from '../../helpers/abbreviateString';
-import { useObserver } from 'mobx-react';
 import RoomStore from '../../stores/RoomStore';
 import IO from '../../controllers/IO';
-import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function RoomSelectorPanel() {
+export default function RoomSelectorPanel(): React.ReactElement {
     const [refreshLoaded, setRefreshLoaded] = useState(true);
     const [currentAnimationFinished, setCurrentAnimationFinished] = useState(true);
 
@@ -23,16 +23,16 @@ export default function RoomSelectorPanel() {
             setCurrentAnimationFinished(true);
         }
         if (refreshLoaded) {
-            loader.current!.addEventListener('animationiteration', finishAnimation);
+            loader.current.addEventListener('animationiteration', finishAnimation);
         } else {
-            loader.current!.removeEventListener('animationiteration', finishAnimation);
+            loader.current.removeEventListener('animationiteration', finishAnimation);
         }
     }, [refreshLoaded, loader]);
 
     return useObserver(() => (
-        <div className={'room-selector'}>
+        <div className="room-selector">
             {/*     <RoomItem longname={'All Rooms'} shortname={'All'} />
-            {CurrentUserStore.recentRooms.length > 0 && <div className={'room-divider'} />}*/}
+            {CurrentUserStore.recentRooms.length > 0 && <div className={'room-divider'} />} */}
             {CurrentUserStore.recentRooms.map((room) => (
                 <RoomItem
                     key={room.id}
@@ -45,7 +45,7 @@ export default function RoomSelectorPanel() {
                     shortname={abbreviateString(room.name)}
                 />
             ))}
-            <div className={'room-divider'} />
+            <div className="room-divider" />
             {CurrentUserStore.favoriteRooms.map((room) => (
                 <RoomItem
                     key={room.id}
@@ -55,22 +55,21 @@ export default function RoomSelectorPanel() {
                     shortname={abbreviateString(room.name)}
                 />
             ))}
-            <div className={'room-divider'} />
+            <div className="room-divider" />
             <RoomItem
-                onClick={() => {
+                onClick={async () => {
                     setCurrentAnimationFinished(false);
                     setRefreshLoaded(false);
-                    IO.refreshFavoriteRooms().then(() => {
-                        setRefreshLoaded(true);
-                    });
+                    await IO.refreshFavoriteRooms();
+                    setRefreshLoaded(true);
                 }}
                 selected={false}
-                longname={'Refresh Favorite Rooms'}
+                longname="Refresh Favorite Rooms"
                 shortname={
                     <div
                         ref={loader}
                         className={`room-selector-refresh ${
-                            !currentAnimationFinished ? 'loading' : null
+                            !currentAnimationFinished ? 'loading' : ''
                         }`}
                     >
                         <FontAwesomeIcon icon={faRedoAlt} />
