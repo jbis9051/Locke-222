@@ -1,5 +1,5 @@
 import React from 'react';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import User from './User';
 import RoomStore from '../stores/RoomStore';
@@ -54,14 +54,15 @@ class Message {
         return this.mentions.length > 0;
     }
 
-    get content(): string | React.ReactElement {
+    @computed
+    get content(): string | null {
         if (this.type === MessageType.MARKDOWN) {
             return this._content;
         }
         if (typeof this.onebox === 'string') {
             return this.onebox;
         }
-        return this.onebox!.jsx;
+        return this.onebox!.isReady ? this.onebox!.output : null;
     }
 
     get dateModified(): Date {
@@ -102,11 +103,7 @@ class Message {
         const content = htmlToClassicMarkdown(this.rawContent);
         if (!content) {
             this.type = MessageType.ONEBOX;
-            getOneBox(this.rawContent)
-                .then((onebox) => {
-                    this.onebox = onebox;
-                })
-                .catch(console.error);
+            this.onebox = getOneBox(this.rawContent);
             return;
         }
         this._content = content;

@@ -8,6 +8,7 @@ import Message from '../../../models/Message';
 import format from '../../../helpers/dateFormatter';
 import CurrentUserStore from '../../../stores/CurrentUserStore';
 import './SingleMessage.css';
+import '../../../models/onebox/onebox.css';
 
 interface IMessageProps {
     message: Message;
@@ -18,7 +19,10 @@ const SingleMessage: React.FunctionComponent<IMessageProps> = ({ message }) => {
 
     return useObserver(() => (
         <div className="single-message__container">
-            <div className="single-message__content">{message.content}</div>
+            <div
+                className="single-message__content"
+                dangerouslySetInnerHTML={{ __html: message.content ?? 'Loading...' }}
+            />
             <div className="single-message__info">
                 <div className="single-message__timestamp">
                     {format(message.dateCreated, 'time')}
