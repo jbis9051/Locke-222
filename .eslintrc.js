@@ -14,7 +14,6 @@ module.exports = {
         'prettier/react',
     ],
     rules: {
-        'no-void': 'off',
         'no-underscore-dangle': 'off',
         'no-console': 'off',
         'prefer-destructuring': 'warn',

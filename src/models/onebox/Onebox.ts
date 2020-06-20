@@ -16,8 +16,8 @@ export default abstract class Onebox {
     constructor(html: HTMLElement) {
         this.rawContent = html.toString();
         this.html = html;
-        void this.parse();
+        this.parse();
     }
 
-    abstract parse(): Promise<void> | void;
+    abstract parse(): void;
 }
