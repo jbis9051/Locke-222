@@ -1,8 +1,7 @@
-import React from 'react';
-import { Onebox } from './Onebox';
+import Onebox from './Onebox';
 
 export default class OBImage extends Onebox {
-    parse() {
+    parse(): void {
         const src = ((this.html.querySelector('img')! as unknown) as HTMLImageElement).getAttribute(
             'src'
         )!;

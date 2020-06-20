@@ -1,8 +1,7 @@
-import React from 'react';
 import { HTMLElement } from 'node-html-parser';
 import { computed, observable } from 'mobx';
 
-export abstract class Onebox {
+export default abstract class Onebox {
     public readonly rawContent: string;
 
     public readonly html: HTMLElement;

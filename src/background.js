@@ -1,3 +1,4 @@
+// eslint-ignore
 // this file left intentionally blank
 const chrome = window.chrome || {}; // webpack webpack webpack
 

@@ -6,7 +6,7 @@ import RoomStore from '../stores/RoomStore';
 import { htmlToClassicMarkdown } from '../helpers/markdownHelper';
 import { MessageEvent } from '../interfaces/WebSocketEvent';
 import UserStore from '../stores/UserStore';
-import { Onebox } from './onebox/Onebox';
+import Onebox from './onebox/Onebox';
 import getOneBox from './onebox';
 
 interface Mention {
