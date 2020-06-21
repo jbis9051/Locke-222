@@ -1,0 +1,36 @@
+.message-input__box {
+    /* noinspection CssInvalidPropertyValue */
+    width: stretch;
+    margin: 0 15px 15px;
+    border-radius: 10px;
+    background-color: var(--light-gray);
+    display: flex;
+    flex-direction: row;
+}
+
+.message-input__box > * {
+    padding: 12px;
+}
+
+.message-input__text {
+    font-size: 18px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.message-input__btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    color: var(--lighter-gray);
+}
+
+.message-input__btn:hover {
+    color: white;
+}
