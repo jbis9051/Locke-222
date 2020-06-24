@@ -6,6 +6,8 @@
     background-color: var(--light-gray);
     display: flex;
     flex-direction: row;
+    /* allow children to be positioned relative to this container */
+    position: relative;
 }
 
 .message-input__box > * {
@@ -33,4 +35,29 @@
 
 .message-input__btn:hover {
     color: white;
+}
+
+.message-input__loading,
+.message-input__error {
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.message-input__loading {
+    background-color: var(--lighter-gray);
+    opacity: 0.5;
+}
+
+.message-input__error {
+    background-color: var(--error-red);
+    color: white;
+}
+
+.message-input__loading--icon {
+    position: absolute;
+    left: 20px;
 }

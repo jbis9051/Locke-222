@@ -238,21 +238,26 @@ class IO {
     async send(content: string) {
         const resp = await fetch(`/chats/${RoomStore.id}/messages/new`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: formEncoder({
                 text: content,
                 fkey: this.fkey,
             }),
         });
-        const data = await resp.text();
-        if (resp.status === 200) {
-            return true;
+        if (resp.status !== 200) {
+            const data = await resp.text();
+            throw new Error(data);
         }
-        throw new Error(data);
     }
 
     async edit(id: number, newContent: string) {
         const resp = await fetch(`/messages/${id}`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: formEncoder({
                 text: newContent,
                 fkey: this.fkey,
@@ -268,6 +273,9 @@ class IO {
     async starMessageToggle(messageId: number) {
         const resp = await fetch(`/messages/${messageId}/star`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: formEncoder({
                 fkey: this.fkey,
             }),

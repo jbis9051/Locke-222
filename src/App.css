@@ -6,6 +6,8 @@
     --gray: #35393e;
     --dark-gray: #2e3137;
     --darker-gray: #202225;
+
+    --error-red: #a51717;
 }
 
 .app-container {
