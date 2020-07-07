@@ -8,6 +8,7 @@ import RoomWindow from './components/RoomWindow/RoomWindow';
 import UIStore from './stores/UIStore';
 import Modal from './components/Modal/Modal';
 import RoomStore from './stores/RoomStore';
+import Spinner from './components/Util/Spinner';
 
 function App(): React.ReactElement {
     const [isReady, setIsReady] = useState(false);
@@ -37,7 +38,7 @@ function App(): React.ReactElement {
                 </div>
             ) : (
                 <div className="loader">
-                    <span>Loading...</span>
+                    <Spinner />
                 </div>
             )}
         </div>

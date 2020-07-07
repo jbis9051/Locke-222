@@ -14,7 +14,7 @@ export default function UserItem({
     user: User;
     displayName?: boolean;
     displayAvatar?: boolean;
-    popupDirection: 'left' | 'right';
+    popupDirection: 'left' | 'right' | false;
 }): React.ReactElement {
     const [visible, setVisible] = useState(false);
     const [userData, setUserData] = useState<ThumbsResponse | null>(null);
@@ -26,6 +26,9 @@ export default function UserItem({
     });
 
     function tooltipOpen() {
+        if (!popupDirection) {
+            return;
+        }
         IO.getUserThumb(user.id)
             .then((thumb) => {
                 setUserData(thumb);
@@ -65,11 +68,14 @@ export default function UserItem({
             </div>
             <PopOutMenu
                 shouldClose={shouldClose.current}
-                direction={popupDirection}
+                direction={popupDirection || 'left'}
                 elRect={userButton.current?.getBoundingClientRect()}
                 visible={visible}
             >
-                <div onClick={(e) => e.stopPropagation()} className="user-popout-menu">
+                <div
+                    onClick={(e) => popupDirection && e.stopPropagation()}
+                    className="user-popout-menu"
+                >
                     <div className="user-popout-menu--user-info">
                         <img
                             src={user.image_url}

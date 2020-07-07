@@ -61,3 +61,34 @@
     position: absolute;
     left: 20px;
 }
+
+.mention-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-100%);
+    width: 100%;
+    padding: 10px;
+    max-width: 100%;
+}
+
+.mention-wrapper {
+    border: 1px solid #2b2d32;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 4px;
+    background: #2f3136;
+}
+
+.mention-container__mention {
+    padding: 3px 8px;
+    margin: 2px 0;
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mention-container__mention:hover {
+    background: #3b3e43;
+}

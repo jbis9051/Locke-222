@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import { UserObject } from '../interfaces/UserObject';
 
 class User {
@@ -19,6 +19,11 @@ class User {
             return `${this._name} ♦`;
         }
         return this._name;
+    }
+
+    @computed
+    get mentionString(): string {
+        return this._name.replace(/\s+/g, '');
     }
 
     get id(): number {

@@ -30,6 +30,26 @@ class UserStore {
     clearStore() {
         this.users = [];
     }
+
+    filterByMentionString(mentionString: string): User[] {
+        let mentionStringSanitized = mentionString.toLowerCase();
+        if (mentionStringSanitized[0] === '@') {
+            mentionStringSanitized = mentionString.substring(1);
+        }
+        return this.users.slice(2).filter(
+            (user) => user.mentionString.toLowerCase().startsWith(mentionStringSanitized) // we need to sort
+        );
+    }
+
+    getByMentionString(mentionString: string) {
+        let mentionStringSanitized = mentionString.toLowerCase();
+        if (mentionStringSanitized[0] === '@') {
+            mentionStringSanitized = mentionStringSanitized.substring(1);
+        }
+        return this.users
+            .slice(2)
+            .filter((users) => users.mentionString.toLowerCase() === mentionStringSanitized);
+    }
 }
 
 export default new UserStore();

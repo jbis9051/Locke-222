@@ -1,5 +1,6 @@
 import { HTMLElement, Node, parse, TextNode } from 'node-html-parser';
 import he from 'he';
+import parseStringMessage from './stringMessageHelper';
 
 const decode = (text: string) => {
     return he.decode(text).replace(/&#39;/g, "'");
@@ -11,7 +12,7 @@ export function htmlToClassicMarkdown(html: string): string | null {
     function parseNodeRoot(root: Node): string {
         function parseNode(node: Node): string {
             if (node instanceof TextNode) {
-                return decode(node.text);
+                return parseStringMessage(decode(node.text));
             }
             if (node instanceof HTMLElement) {
                 switch (node.tagName) {
@@ -33,7 +34,9 @@ export function htmlToClassicMarkdown(html: string): string | null {
                     }
                     case 'div': {
                         if (node.classNames.includes('full')) {
-                            return decode(node.innerHTML.replace(/<br>/g, '\n')); // does this count? :D
+                            return parseStringMessage(
+                                decode(node.innerHTML.replace(/<br>/g, '\n'))
+                            ); // does this count? :D
                         }
                         if (node.classNames.includes('onebox')) {
                             throw new Error('Embedded one boxes are not supported');

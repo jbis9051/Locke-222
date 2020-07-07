@@ -6,6 +6,7 @@ import { StarFilter } from '../../../interfaces/StarFilter';
 import Message from '../../../models/Message';
 import MessageGroup from '../Chat/MessageGroup';
 import RoomStore from '../../../stores/RoomStore';
+import Spinner from '../../Util/Spinner';
 
 export default function StarsChannel({ filter }: { filter: StarFilter }): React.ReactElement {
     // all the stars, not all-stars--you know what i mean
@@ -22,7 +23,18 @@ export default function StarsChannel({ filter }: { filter: StarFilter }): React.
     reaction(() => RoomStore.id, updateStars); // update when the room changes
 
     if (!messages) {
-        return <span>Loading...</span>;
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                }}
+            >
+                <Spinner />
+            </div>
+        );
     }
 
     return (

@@ -62,3 +62,8 @@
     background-color: var(--light-gray);
     color: white;
 }
+
+.user-mention {
+    display: inline-block;
+    color: rgb(73, 114, 255);
+}
